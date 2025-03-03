@@ -61,3 +61,20 @@ To stop the supabase containers, run:
 ```bash
 npx supabase stop
 ```
+
+## Create Database Tables
+
+If your postgres container volume is empty, then supabase will automatically execute the `.sql` files that are in the `supabase/migrations/` directory when you run `npx supabase start`. If your volume already exists or if you see that the database schema didn't change based on the migration files, then you can run `npx supabase db reset`. This will reset the database using the migration files.
+
+Unfortunately, we don't push our `supabase/` directory to github, so we will place all our `.sql` scripts in the `sql/` directory. This means that you will have to copy the `.sql` files into `supabase/migrations/`. I have found two ways of doing this:
+
+1. Copy the `.sql` files from `sql/` into `supabase/migrations/`. This requires that you manually copy the file every time there is an update to the `.sql` files.
+2. Create a symbolic link in `supabase/migrations/` that points to the files in `sql/`. Symbolic links are just pointers to other files, so if the other files update, then the symbolic link will reflect that update. I prefer this method.
+
+### Creating symbolic link
+Let's say that we want to create a symbolic link in `supabase/migrations/` of `sql/01_createdb.sql`. Assuming you are in the root directory of the project, on MacOS you can create a link using:
+```
+ln -s ../../sql/01_createdb.sql supabase/migrations/01_createdb.sql
+```
+
+I'm not sure how to create symbolic links on Windows.
