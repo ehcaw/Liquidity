@@ -20,15 +20,5 @@
 ## Screenshots (if applicable)
 <!-- Add screenshots to help explain your changes if UI is affected -->
 
-## Checklist
-- [ ] My code been formatted
-- [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have updated the documentation accordingly
-- [ ] My changes generate no new warnings
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and publishedgit add .github/PULL_REQUEST_TEMPLATE.md
-- [ ] I have checked my code and corrected any misspellings
-
 ## Additional Notes
 <!-- Any additional information that might be useful for reviewers -->
