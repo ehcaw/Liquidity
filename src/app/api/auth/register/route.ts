@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     }
 
     // insert user into database
-    const { password, ...user } = body;
+    const { password: _, ...user } = body;
     const { error: insertError } = await supabase.from('users').insert(user);
 
     if (insertError) {
