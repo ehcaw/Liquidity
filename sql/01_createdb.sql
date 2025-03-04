@@ -1,5 +1,5 @@
 create type user_role_enum as enum('User', 'Admin');
-create type user_status_enum as enum('Pending', 'Active', 'Suspended', 'Deleted', 'Locked');
+create type user_status_enum as enum('Active', 'Suspended', 'Deleted', 'Locked');
 create type account_type_enum as enum('Savings', 'Checking');
 create type account_status_enum as enum('Active', 'Frozen', 'Closed', 'Pending', 'Overdrawn');
 create type transaction_status_enum as enum('Complete', 'Pending', 'Failed');
@@ -20,14 +20,14 @@ create table users (
   created_at timestamp not null default CURRENT_TIMESTAMP,
   first_name varchar(50) not null,
   last_name varchar(50) not null,
-  email varchar(5) not null unique,
+  email varchar(50) not null unique,
   phone char(10) not null,
   role user_role_enum not null default 'User',
   street text not null,
   city text not null,
   state char(2) not null,
   zipcode char(5) not null,
-  status user_status_enum not null default 'Pending',
+  status user_status_enum not null default 'Active',
   primary key(id),
   foreign key(state) references states(code) on update cascade
 );
