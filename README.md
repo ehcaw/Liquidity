@@ -7,9 +7,17 @@ npm install
 ```
 
 Run the development server:
-
 ```bash
-npm run dev
+docker compose -f docker-compose.dev.yml up --build
+```
+If you already have the nextjs app image, then use:
+```bash
+docker compose -f docker-compose.dev.yml up
+```
+
+To kill containers and remove all volumes use:
+```bash
+docker compose -f docker-compose.dev.yml down -v
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
