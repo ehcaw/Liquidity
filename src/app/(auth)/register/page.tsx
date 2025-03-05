@@ -65,7 +65,7 @@ export default function Register() {
     }).catch((error) => {
       console.error(error);
     });
-  }, []);
+  }, [fetchData]);
 
   function onSubmit(values: z.infer<typeof RegisterFormSchema>) {
     setIsLoading(true);

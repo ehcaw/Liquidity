@@ -108,7 +108,7 @@ export default function SignInForm() {
       </CardContent>
       <CardFooter className="flex justify-center border-t p-4">
         <p className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
+          Don&apost have an account?{" "}
           <a
             href="/register"
             className="text-primary underline underline-offset-4"

@@ -28,7 +28,7 @@ export default function Navbar() {
         setUser(null);
       }
     });
-  }, []);
+  }, [supabase.auth]);
 
   async function logout() {
     await supabase.auth.signOut();
