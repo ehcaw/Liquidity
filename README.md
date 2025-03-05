@@ -71,6 +71,9 @@ Unfortunately, we don't push our `supabase/` directory to github, so we will pla
 1. Copy the `.sql` files from `sql/` into `supabase/migrations/`. This requires that you manually copy the file every time there is an update to the `.sql` files.
 2. Create a symbolic link in `supabase/migrations/` that points to the files in `sql/`. Symbolic links are just pointers to other files, so if the other files update, then the symbolic link will reflect that update. I prefer this method.
 
+### seed.sql vs migration files
+The `seed.sql` shoud NOT be placed in `supabase/migrations/`, instead it should be placed in `supabase/`. The rest of the files in `sql/` should be put in `supabase/migrations`.
+
 ### Creating symbolic link
 Let's say that we want to create a symbolic link in `supabase/migrations/` of `sql/01_createdb.sql`. Assuming you are in the root directory of the project, on MacOS you can create a link using:
 ```
