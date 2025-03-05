@@ -121,9 +121,9 @@ export default function LandingPage() {
                 Everything You Need in One Place
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                Our comprehensive banking platform offers all the services you'd
-                expect from a traditional bank, but with the convenience and
-                innovation of modern technology.
+                Our comprehensive banking platform offers all the services
+                you&apos;d expect from a traditional bank, but with the
+                convenience and innovation of modern technology.
               </p>
             </div>
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -158,8 +158,8 @@ export default function LandingPage() {
                   Your Security is Our Top Priority
                 </h2>
                 <p className="mt-4 text-lg text-muted-foreground">
-                  We've implemented multiple layers of protection to ensure your
-                  financial data and transactions remain secure.
+                  We&apos;ve implemented multiple layers of protection to ensure
+                  your financial data and transactions remain secure.
                 </p>
                 <ul className="mt-8 space-y-4">
                   {securityFeatures.map((feature) => (
