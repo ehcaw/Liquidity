@@ -89,3 +89,21 @@ ln -s ../../sql/01_createdb.sql supabase/migrations/01_createdb.sql
 ```
 
 I'm not sure how to create symbolic links on Windows.
+
+
+## API Responses
+API responses should follow a standard so that it's reusable. Furthermore, make sure that each route handler has proper response status codes.
+
+For 2xx responses, the response body should be:
+```
+{ data: ... }
+```
+If you are returning a `204` response status code you should use:
+```
+return new Response(null, { status: 204 });
+```
+
+For 4xx or 5xx responses, the response body should be:
+```
+{ error: ... }
+```
