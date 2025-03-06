@@ -38,13 +38,15 @@ import { useRouter } from "next/navigation";
 type State = Database['public']['Tables']['states']['Row']
 type User = Database['public']['Tables']['users']['Row']
 
+type FormValues = z.infer<typeof RegisterFormSchema>;
+
 export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [states, setStates] = useState<State['code'][]>([]);
   const router = useRouter();
   const { fetchData } = useFetch();
 
-  const form = useForm<z.infer<typeof RegisterFormSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
       first_name: "",
@@ -61,13 +63,13 @@ export default function Register() {
 
   useEffect(() => {
     fetchData<State[]>("/api/states").then((data) => {
-      setStates(data.map((state) => state.code));
+      setStates(data?.map((state) => state.code) || []);
     }).catch((error) => {
       console.error(error);
     });
-  }, [fetchData]);
+  }, []);
 
-  function onSubmit(values: z.infer<typeof RegisterFormSchema>) {
+  function onSubmit(values: FormValues) {
     setIsLoading(true);
 
     fetchData<User>("/api/auth/register", {
