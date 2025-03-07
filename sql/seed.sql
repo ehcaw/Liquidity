@@ -1,10 +1,3 @@
--- Seed script with fixed structure but random transaction amounts
--- Avoids column ambiguity by not using joins on tables with shared column names
-
--- Clear existing data
-TRUNCATE users, accounts, transactions, ledger, payment_schedule RESTART IDENTITY;
-
--- Insert states
 INSERT INTO states (code, name) VALUES
   ('AL', 'Alabama'),
   ('AK', 'Alaska'),
