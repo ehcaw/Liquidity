@@ -1,3 +1,10 @@
+-- Seed script with fixed structure but random transaction amounts
+-- Avoids column ambiguity by not using joins on tables with shared column names
+
+-- Clear existing data
+TRUNCATE users, accounts, transactions, ledger, payment_schedule RESTART IDENTITY;
+
+-- Insert states
 INSERT INTO states (code, name) VALUES
   ('AL', 'Alabama'),
   ('AK', 'Alaska'),
@@ -50,292 +57,328 @@ INSERT INTO states (code, name) VALUES
   ('WI', 'Wisconsin'),
   ('WY', 'Wyoming');
 
--- Wealthy users for demo purposes
-INSERT INTO users (first_name, last_name, email, phone, role, street, city, state, zipcode, status)
+-- Insert users with specific creation dates
+INSERT INTO users (first_name, last_name, email, phone, role, street, city, state, zipcode, status, created_at)
 VALUES
-  ('Amara', 'Del Prato', 'amara.delprato@sjsu.edu', '5556789012', 'User', '1 Luxury Lane', 'New York', 'NY', '10001', 'Active'),
-  ('Jisheng', 'Jiang', 'jisheng.jiang@sjsu.edu', '5557890123', 'User', '2 Wealth Way', 'Seattle', 'WA', '98101', 'Active'),
-  ('Manas', 'Chougule', 'manas.chougule@sjsu.edu', '5558901234', 'User', '3 Prosperity Pkwy', 'Boston', 'MA', '02108', 'Active'),
-  ('Michael', 'Chu', 'michael.chu@sjsu.edu', '5559012345', 'User', '4 Fortune Blvd', 'Chicago', 'IL', '60601', 'Active'),
-  ('Miles', 'Thames', 'miles.thames@sjsu.edu', '5550123456', 'User', '5 Success St', 'Austin', 'TX', '78701', 'Active'),
-  ('Ryan', 'Nguyen', 'ryan.nguyen@sjsu.edu', '5551230987', 'User', '6 Rich Ave', 'San Jose', 'CA', '95113', 'Active');
+  ('Optimus', 'Prime', 'optimus.prime@autobots.com', '5551234567', 'Admin'::user_role_enum, '123 Cybertron Ave', 'San Francisco', 'CA', '94105', 'Active'::user_status_enum, '2024-01-01'::timestamp),
+  ('Megatron', 'Decepticon', 'megatron@decepticons.com', '5552345678', 'User'::user_role_enum, '456 Dark Moon St', 'Los Angeles', 'CA', '90001', 'Active'::user_status_enum, '2024-01-02'::timestamp),
+  ('Bumblebee', 'Autobot', 'bumblebee@autobots.com', '5553456789', 'User'::user_role_enum, '789 Yellow St', 'San Diego', 'CA', '92101', 'Active'::user_status_enum, '2024-01-03'::timestamp),
+  ('SpongeBob', 'SquarePants', 'spongebob@bikinibottom.com', '5554567890', 'User'::user_role_enum, '124 Pineapple St', 'Miami', 'FL', '33101', 'Active'::user_status_enum, '2024-01-04'::timestamp),
+  ('Patrick', 'Star', 'patrick@bikinibottom.com', '5555678901', 'User'::user_role_enum, '125 Rock St', 'Orlando', 'FL', '32801', 'Active'::user_status_enum, '2024-01-05'::timestamp),
+  ('Sandy', 'Cheeks', 'sandy@bikinibottom.com', '5556789012', 'User'::user_role_enum, '126 Dome St', 'Tampa', 'FL', '33602', 'Active'::user_status_enum, '2024-01-06'::timestamp),
+  ('Squidward', 'Tentacles', 'squidward@bikinibottom.com', '5557890123', 'User'::user_role_enum, '127 Tiki St', 'Key West', 'FL', '33040', 'Active'::user_status_enum, '2024-01-07'::timestamp),
+  ('Eugene', 'Krabs', 'mrkrebs@krustykrebs.com', '5558901234', 'User'::user_role_enum, '128 Krusty Lane', 'Jacksonville', 'FL', '32099', 'Active'::user_status_enum, '2024-01-08'::timestamp),
+  ('Amara', 'Del Prato', 'amara.delprato@sjsu.edu', '5559012345', 'User'::user_role_enum, '1 Luxury Lane', 'New York', 'NY', '10001', 'Active'::user_status_enum, '2024-01-09'::timestamp),
+  ('Jisheng', 'Jiang', 'jisheng.jiang@sjsu.edu', '5550123456', 'User'::user_role_enum, '2 Wealth Way', 'Seattle', 'WA', '98101', 'Active'::user_status_enum, '2024-01-10'::timestamp),
+  ('Manas', 'Chougule', 'manas.chougule@sjsu.edu', '5551230987', 'User'::user_role_enum, '3 Prosperity Pkwy', 'Boston', 'MA', '02108', 'Active'::user_status_enum, '2024-01-11'::timestamp),
+  ('Michael', 'Chu', 'michael.chu@sjsu.edu', '5552341098', 'User'::user_role_enum, '4 Fortune Blvd', 'Chicago', 'IL', '60601', 'Active'::user_status_enum, '2024-01-12'::timestamp),
+  ('Miles', 'Thames', 'miles.thames@sjsu.edu', '5553452109', 'User'::user_role_enum, '5 Success St', 'Austin', 'TX', '78701', 'Active'::user_status_enum, '2024-01-13'::timestamp),
+  ('Ryan', 'Nguyen', 'ryan.nguyen@sjsu.edu', '5554563210', 'User'::user_role_enum, '6 Rich Ave', 'San Jose', 'CA', '95113', 'Active'::user_status_enum, '2024-01-14'::timestamp),
+  ('Suspended', 'User', 'suspended@example.com', '5551111111', 'User'::user_role_enum, '1 Suspended St', 'Miami', 'FL', '33101', 'Suspended'::user_status_enum, '2024-01-15'::timestamp),
+  ('Locked', 'User', 'locked@example.com', '5552222222', 'User'::user_role_enum, '2 Locked St', 'Boston', 'MA', '02108', 'Locked'::user_status_enum, '2024-01-16'::timestamp),
+  ('Deleted', 'User', 'deleted@example.com', '5553333333', 'User'::user_role_enum, '3 Deleted St', 'Seattle', 'WA', '98101', 'Deleted'::user_status_enum, '2024-01-17'::timestamp);
 
--- characters in Transformers and SpongeBob(personal preference if you read this and wants to add more tell me.)
-INSERT INTO users (first_name, last_name, email, phone, role, street, city, state, zipcode, status)
-VALUES
-  ('Optimus', 'Prime', 'optimus.prime@autobots.com', '5551234567', 'Admin', '123 Cybertron Ave', 'San Francisco', 'CA', '94105', 'Active'),
-  ('Megatron', 'Decepticon', 'megatron@decepticons.com', '5552345678', 'User', '456 Dark Moon St', 'Los Angeles', 'CA', '90001', 'Active'),
-  ('Bumblebee', 'Autobot', 'bumblebee@autobots.com', '5553456789', 'User', '789 Yellow St', 'San Diego', 'CA', '92101', 'Active'),
-  ('SpongeBob', 'SquarePants', 'spongebob@bikinibottom.com', '5554567890', 'User', '124 Pineapple St', 'Miami', 'FL', '33101', 'Active'),
-  ('Patrick', 'Star', 'patrick@bikinibottom.com', '5555678901', 'User', '125 Rock St', 'Orlando', 'FL', '32801', 'Active');
-
--- Add users with different statuses for testing
-INSERT INTO users (first_name, last_name, email, phone, role, street, city, state, zipcode, status)
-VALUES
-  ('Suspended', 'User', 'suspended@example.com', '5551112222', 'User', '100 Test St', 'Phoenix', 'AZ', '85001', 'Suspended'),
-  ('Deleted', 'User', 'deleted@example.com', '5553334444', 'User', '200 Test St', 'Denver', 'CO', '80201', 'Deleted'),
-  ('Locked', 'User', 'locked@example.com', '5555556666', 'User', '300 Test St', 'Portland', 'OR', '97201', 'Locked');
-
--- We don't have a system id, so for now we'll use a number instead, and we can write an API that automatically generates the UUID later.
--- And everyone = RICH, but with random money flows
--- Create accounts for Optimus Prime (user_id = 7)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('700000000001', 'Checking', 75000.00 + (random() * 30000)::numeric(10,2), 'Active', 7),
-  ('700000000002', 'Savings', 150000.00 + (random() * 50000)::numeric(10,2), 'Active', 7);
-
--- Create accounts for Megatron (user_id = 8)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('800000000001', 'Checking', 50000.00 + (random() * 25000)::numeric(10,2), 'Active', 8),
-  ('800000000002', 'Savings', 100000.00 + (random() * 40000)::numeric(10,2), 'Frozen', 8);
-
--- Create accounts for Bumblebee (user_id = 9)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('900000000001', 'Checking', 25000.00 + (random() * 20000)::numeric(10,2), 'Active', 9),
-  ('900000000002', 'Savings', 45000.00 + (random() * 30000)::numeric(10,2), 'Active', 9);
-
--- Create accounts for SpongeBob (user_id = 10)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('100000000001', 'Checking', 15000.00 + (random() * 15000)::numeric(10,2), 'Active', 10),
-  ('100000000002', 'Savings', 30000.00 + (random() * 25000)::numeric(10,2), 'Active', 10);
-
--- Create accounts for Patrick (user_id = 11)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('110000000001', 'Checking', 5000.00 - (random() * 2000)::numeric(10,2), 'Overdrawn', 11),
-  ('110000000002', 'Savings', 10000.00 + (random() * 5000)::numeric(10,2), 'Active', 11);
-
--- Create accounts for wealthy users (high balances)
--- Amara Del Prato (user_id = 1)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('010000000001', 'Checking', 2500000.00 + (random() * 500000)::numeric(10,2), 'Active', 1),
-  ('010000000002', 'Savings', 7500000.00 + (random() * 1000000)::numeric(10,2), 'Active', 1);
-
--- Jisheng Jiang (user_id = 2)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('020000000001', 'Checking', 3000000.00 + (random() * 600000)::numeric(10,2), 'Active', 2),
-  ('020000000002', 'Savings', 8000000.00 + (random() * 1500000)::numeric(10,2), 'Active', 2);
-
--- Manas Chougule (user_id = 3)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('030000000001', 'Checking', 3500000.00 + (random() * 700000)::numeric(10,2), 'Active', 3),
-  ('030000000002', 'Savings', 9000000.00 + (random() * 2000000)::numeric(10,2), 'Active', 3);
-
--- Michael Chu (user_id = 4)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('040000000001', 'Checking', 4000000.00 + (random() * 800000)::numeric(10,2), 'Active', 4),
-  ('040000000002', 'Savings', 6000000.00 + (random() * 1200000)::numeric(10,2), 'Active', 4);
-
--- Miles Thames (user_id = 5)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('050000000001', 'Checking', 4500000.00 + (random() * 900000)::numeric(10,2), 'Active', 5),
-  ('050000000002', 'Savings', 5500000.00 + (random() * 1100000)::numeric(10,2), 'Active', 5);
-
--- Ryan Nguyen (user_id = 6)
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('060000000001', 'Checking', 5000000.00 + (random() * 1000000)::numeric(10,2), 'Active', 6),
-  ('060000000002', 'Savings', 5000000.00 + (random() * 1000000)::numeric(10,2), 'Active', 6);
-
--- Accounts with different statuses
-INSERT INTO accounts (account_number, account_type, balance, status, user_id)
-VALUES
-  ('120000000001', 'Checking', 1000.00 + (random() * 500)::numeric(10,2), 'Pending', 12),
-  ('130000000001', 'Checking', 2000.00 + (random() * 1000)::numeric(10,2), 'Closed', 13),
-  ('140000000001', 'Checking', -100.00 - (random() * 200)::numeric(10,2), 'Overdrawn', 14);
-
--- Random transactions for each user (5-10 transactions per account)
--- Function to generate transactions for an account
+-- Insert accounts with high initial balances
 DO $$
 DECLARE
-    acc RECORD;
-    num_transactions INTEGER;
-    trans_amount NUMERIC(10,2);
-    trans_desc TEXT;
-    trans_type transaction_type_enum;
-    trans_status transaction_status_enum;
-    curr_balance NUMERIC(10,2);
-    i INTEGER;
-    trans_id INTEGER;
+  i INTEGER;
+  account_number CHAR(12);
+  account_type account_type_enum;
+  balance NUMERIC(10,2);
+  account_status account_status_enum;
+  created_date TIMESTAMP;
+  user_id INTEGER;
 BEGIN
-    -- Get max transaction ID for continuation
-    SELECT COALESCE(MAX(id), 0) INTO trans_id FROM transactions;
+  -- Loop through all users
+  FOR user_id IN 1..17 LOOP
+    -- Skip deleted users
+    IF user_id = 17 THEN 
+      CONTINUE;
+    END IF;
     
-    -- Loop through all accounts
-    FOR acc IN SELECT id, balance FROM accounts LOOP
-        -- Random number of transactions (5-10)
-        num_transactions := 5 + floor(random() * 6)::integer;
-        curr_balance := 0; -- Start with 0 balance
-        
-        -- Create transactions for this account
-        FOR i IN 1..num_transactions LOOP
-            trans_id := trans_id + 1;
-            
-            -- Randomly decide transaction type
-            CASE floor(random() * 4)::integer
-                WHEN 0 THEN trans_type := 'Deposit';
-                WHEN 1 THEN trans_type := 'Withdrawal';
-                WHEN 2 THEN trans_type := 'Transfer';
-                ELSE trans_type := 'Payment';
-            END CASE;
-            
-            -- Determine amount based on type (positive for deposits, negative for others)
-            IF acc.balance > 1000000 THEN -- Wealthy accounts
-                IF trans_type = 'Deposit' THEN
-                    trans_amount := (random() * 200000 + 50000)::numeric(10,2);
-                ELSE
-                    trans_amount := (random() * -100000 - 10000)::numeric(10,2);
-                END IF;
-            ELSE -- Regular accounts
-                IF trans_type = 'Deposit' THEN
-                    trans_amount := (random() * 10000 + 1000)::numeric(10,2);
-                ELSE
-                    trans_amount := (random() * -5000 - 500)::numeric(10,2);
-                END IF;
-            END IF;
-            
-            -- Generate description
-            CASE floor(random() * 10)::integer
-                WHEN 0 THEN trans_desc := 'Salary deposit';
-                WHEN 1 THEN trans_desc := 'Grocery shopping';
-                WHEN 2 THEN trans_desc := 'Online purchase';
-                WHEN 3 THEN trans_desc := 'Utility bill payment';
-                WHEN 4 THEN trans_desc := 'Restaurant payment';
-                WHEN 5 THEN trans_desc := 'Investment return';
-                WHEN 6 THEN trans_desc := 'Transfer between accounts';
-                WHEN 7 THEN trans_desc := 'ATM withdrawal';
-                WHEN 8 THEN trans_desc := 'Subscription payment';
-                ELSE trans_desc := 'Miscellaneous transaction';
-            END CASE;
-            
-            -- Decide status (mostly Complete, some Pending and Failed)
-            CASE 
-                WHEN random() < 0.85 THEN trans_status := 'Complete';
-                WHEN random() < 0.95 THEN trans_status := 'Pending';
-                ELSE trans_status := 'Failed';
-            END CASE;
-            
-            -- Update running balance
-            IF trans_status = 'Complete' THEN
-                curr_balance := curr_balance + trans_amount;
-            END IF;
-            
-            -- Insert transaction
-            INSERT INTO transactions (id, amount, description, balance, status, transaction_type, account_id)
-            VALUES (trans_id, trans_amount, trans_desc, curr_balance, trans_status, trans_type, acc.id);
-            
-            -- Create ledger entry for completed transactions
-            IF trans_status = 'Complete' THEN
-                INSERT INTO ledger (amount, description, entry_category, balance, account_id, transaction_id)
-                VALUES (
-                    trans_amount, 
-                    trans_desc, 
-                    CASE WHEN trans_amount > 0 THEN 'Credit' ELSE 'Debit' END,
-                    curr_balance,
-                    acc.id,
-                    trans_id
-                );
-            END IF;
-        END LOOP;
-        
-        -- Update account balance to match final transaction balance if transactions are complete
-        UPDATE accounts 
-        SET balance = (
-            SELECT balance FROM transactions 
-            WHERE account_id = acc.id AND status = 'Complete' 
-            ORDER BY id DESC LIMIT 1
-        )
-        WHERE id = acc.id AND EXISTS (
-            SELECT 1 FROM transactions 
-            WHERE account_id = acc.id AND status = 'Complete'
-        );
-    END LOOP;
+    -- Account creation dates after user creation
+    created_date := '2024-01-01'::timestamp + user_id * INTERVAL '2 day';
+    
+    -- Create checking account
+    account_number := LPAD(user_id::text || '01', 12, '0');
+    account_type := 'Checking'::account_type_enum;
+    
+    -- Higher balances for wealthy users
+    IF user_id BETWEEN 9 AND 14 THEN 
+      balance := 10000000 + (user_id * 500000);
+    ELSE
+      balance := 1000000 + (user_id * 100000);
+    END IF;
+    
+    -- Account status (mostly active)
+    IF user_id IN (15, 16) THEN
+      account_status := 'Frozen'::account_status_enum;
+    ELSE 
+      account_status := 'Active'::account_status_enum;
+    END IF;
+    
+    -- Insert checking account
+    INSERT INTO accounts (account_number, account_type, balance, status, user_id, created_at)
+    VALUES (account_number, account_type, balance, account_status, user_id, created_date);
+    
+    -- Create savings account
+    account_number := LPAD(user_id::text || '02', 12, '0');
+    account_type := 'Savings'::account_type_enum;
+    
+    -- Higher balances for savings
+    IF user_id BETWEEN 9 AND 14 THEN 
+      balance := 20000000 + (user_id * 1000000);
+    ELSE
+      balance := 2000000 + (user_id * 200000);
+    END IF;
+    
+    -- Account status (some variety)
+    IF user_id = 16 THEN
+      account_status := 'Pending'::account_status_enum;
+    ELSE 
+      account_status := 'Active'::account_status_enum;
+    END IF;
+    
+    -- Insert savings account (created a few days after checking)
+    INSERT INTO accounts (account_number, account_type, balance, status, user_id, created_at)
+    VALUES (account_number, account_type, balance, account_status, user_id, created_date + INTERVAL '3 day');
+  END LOOP;
 END $$;
 
--- Create random payment schedules
+-- Create transactions with random amounts
 DO $$
 DECLARE
-    acc RECORD;
-    frequency schedule_frequency_enum;
-    day_of_week_val day_enum;
-    day_of_month_val INTEGER;
-    day_of_year_val DATE;
-    amount NUMERIC(10,2);
-    start_date DATE;
-    end_date DATE;
-    status_val schedule_status_enum;
+  account_rec RECORD;
+  trans_amount NUMERIC(10,2);
+  current_balance NUMERIC(10,2);
+  trans_type transaction_type_enum;
+  trans_status transaction_status_enum;
+  trans_desc TEXT;
+  trans_date TIMESTAMP;
+  trans_id INTEGER;
+  ledger_type ledger_category_enum;
+  num_transactions INTEGER;
+  i INTEGER;
+  descriptions TEXT[] := ARRAY[
+    'Salary deposit', 
+    'Investment return', 
+    'Property purchase', 
+    'Utility payment', 
+    'Vehicle purchase',
+    'Insurance premium',
+    'Interbank transfer',
+    'Loan payment',
+    'Dividend payment',
+    'Miscellaneous transaction'
+  ];
 BEGIN
-    -- Loop through accounts
-    FOR acc IN SELECT id, balance FROM accounts WHERE random() < 0.7 LOOP -- 70% of accounts have schedules
-        -- Determine frequency
-        CASE floor(random() * 5)::integer
-            WHEN 0 THEN frequency := 'Daily';
-            WHEN 1 THEN frequency := 'Weekly';
-            WHEN 2 THEN frequency := 'Monthly';
-            WHEN 3 THEN frequency := 'Annually';
-            ELSE frequency := 'Once';
-        END CASE;
-        
-        -- Set appropriate day values based on frequency
-        day_of_week_val := NULL;
-        day_of_month_val := NULL;
-        day_of_year_val := NULL;
-        
-        IF frequency = 'Weekly' THEN
-            CASE floor(random() * 7)::integer
-                WHEN 0 THEN day_of_week_val := 'Monday';
-                WHEN 1 THEN day_of_week_val := 'Tuesday';
-                WHEN 2 THEN day_of_week_val := 'Wednesday';
-                WHEN 3 THEN day_of_week_val := 'Thursday';
-                WHEN 4 THEN day_of_week_val := 'Friday';
-                WHEN 5 THEN day_of_week_val := 'Saturday';
-                ELSE day_of_week_val := 'Sunday';
-            END CASE;
-        ELSIF frequency = 'Monthly' THEN
-            day_of_month_val := 1 + floor(random() * 28)::integer;
-        ELSIF frequency IN ('Annually', 'Once') THEN
-            day_of_year_val := current_date + (floor(random() * 365)::integer || ' days')::interval;
-        END IF;
-        
-        -- Determine amount based on account balance
-        IF acc.balance > 1000000 THEN -- Wealthy accounts
-            amount := (5000 + random() * 20000)::numeric(10,2);
-        ELSE -- Regular accounts
-            amount := (100 + random() * 1000)::numeric(10,2);
-        END IF;
-        
-        -- Set dates
-        start_date := current_date - (floor(random() * 180)::integer || ' days')::interval;
-        
-        IF frequency = 'Once' THEN
-            end_date := start_date;
+  -- For each active account
+  FOR account_rec IN SELECT id, account_type, balance, created_at FROM accounts WHERE status = 'Active'::account_status_enum LOOP
+    -- Get initial balance for this account
+    current_balance := account_rec.balance;
+    
+    -- Determine number of transactions (10-20 per account)
+    num_transactions := 10 + floor(random() * 11);
+    
+    -- Create transactions for this account
+    FOR i IN 1..num_transactions LOOP
+      -- Randomly select transaction type
+      CASE floor(random() * 4)
+        WHEN 0 THEN trans_type := 'Deposit'::transaction_type_enum;
+        WHEN 1 THEN trans_type := 'Withdrawal'::transaction_type_enum;
+        WHEN 2 THEN trans_type := 'Transfer'::transaction_type_enum;
+        ELSE trans_type := 'Payment'::transaction_type_enum;
+      END CASE;
+      
+      -- Random transaction amount
+      IF account_rec.account_type = 'Checking'::account_type_enum THEN
+        IF trans_type = 'Deposit'::transaction_type_enum THEN
+          trans_amount := 10000 + (random() * 490000);
+          ledger_type := 'Credit'::ledger_category_enum;
         ELSE
-            end_date := start_date + (365 + floor(random() * 730)::integer || ' days')::interval;
+          trans_amount := -1 * (10000 + (random() * 490000));
+          ledger_type := 'Debit'::ledger_category_enum;
         END IF;
-        
-        -- Set status
-        IF random() < 0.9 THEN
-            status_val := 'Active';
+      ELSE
+        -- Higher amounts for Savings accounts
+        IF trans_type = 'Deposit'::transaction_type_enum THEN
+          trans_amount := 50000 + (random() * 950000);
+          ledger_type := 'Credit'::ledger_category_enum;
         ELSE
-            status_val := 'Paused';
+          trans_amount := -1 * (50000 + (random() * 950000));
+          ledger_type := 'Debit'::ledger_category_enum;
         END IF;
-        
-        -- Insert payment schedule
-        INSERT INTO payment_schedule (
-            amount, start_date, end_date, status, frequency, 
-            day_of_week, day_of_month, day_of_year, account_id
-        )
-        VALUES (
-            amount, start_date, end_date, status_val, frequency,
-            day_of_week_val, day_of_month_val, day_of_year_val, acc.id
-        );
+      END IF;
+      
+      -- Ensure balance stays above 1 million
+      IF current_balance + trans_amount < 1000000 THEN
+        -- Adjust withdrawal to maintain minimum balance
+        trans_amount := -1 * (current_balance - 1000000);
+      END IF;
+      
+      -- Update running balance
+      current_balance := current_balance + trans_amount;
+      
+      -- Random transaction status (mostly complete)
+      IF random() < 0.9 THEN
+        trans_status := 'Complete'::transaction_status_enum;
+      ELSIF random() < 0.5 THEN
+        trans_status := 'Pending'::transaction_status_enum;
+      ELSE
+        trans_status := 'Failed'::transaction_status_enum;
+      END IF;
+      
+      -- Random description
+      trans_desc := descriptions[1 + floor(random() * 10)];
+      
+      -- Transaction date after account creation
+      trans_date := account_rec.created_at + (random() * 30 + i * 2) * INTERVAL '1 day';
+      
+      -- Insert transaction
+      INSERT INTO transactions (
+        amount, 
+        description, 
+        balance, 
+        status, 
+        transaction_type, 
+        account_id, 
+        created_at
+      )
+      VALUES (
+        ABS(trans_amount),
+        trans_desc,
+        current_balance,
+        trans_status,
+        trans_type,
+        account_rec.id,
+        trans_date
+      ) RETURNING id INTO trans_id;
+      
+      -- Create ledger entry for this transaction
+      INSERT INTO ledger (
+        amount,
+        description,
+        entry_category,
+        balance,
+        account_id,
+        transaction_id,
+        created_at
+      )
+      VALUES (
+        ABS(trans_amount),
+        trans_desc,
+        ledger_type,
+        current_balance,
+        account_rec.id,
+        trans_id,
+        trans_date
+      );
     END LOOP;
+    
+    -- Update account with final balance
+    UPDATE accounts SET balance = current_balance WHERE id = account_rec.id;
+  END LOOP;
+END $$;
+
+-- Create payment schedules
+DO $$
+DECLARE
+  account_rec RECORD;
+  payment_amount NUMERIC(10,2);
+  start_date DATE;
+  end_date DATE;
+  payment_frequency schedule_frequency_enum;
+  payment_status schedule_status_enum;
+  day_val day_enum;
+  day_num INTEGER;
+  yearly_date DATE;
+  frequency_types schedule_frequency_enum[] := ARRAY[
+    'Daily'::schedule_frequency_enum,
+    'Weekly'::schedule_frequency_enum,
+    'Monthly'::schedule_frequency_enum,
+    'Annually'::schedule_frequency_enum,
+    'Once'::schedule_frequency_enum
+  ];
+  day_types day_enum[] := ARRAY[
+    'Monday'::day_enum,
+    'Tuesday'::day_enum,
+    'Wednesday'::day_enum,
+    'Thursday'::day_enum,
+    'Friday'::day_enum,
+    'Saturday'::day_enum,
+    'Sunday'::day_enum
+  ];
+BEGIN
+  -- For active accounts with 70% chance of having a payment schedule
+  FOR account_rec IN 
+    SELECT id, account_type, balance, created_at FROM accounts 
+    WHERE status = 'Active'::account_status_enum AND random() < 0.7
+  LOOP
+    -- Random payment frequency
+    payment_frequency := frequency_types[1 + floor(random() * 5)];
+    
+    -- Random amount based on account balance
+    IF account_rec.balance > 10000000 THEN
+      payment_amount := 10000 + (random() * 90000);
+    ELSE
+      payment_amount := 1000 + (random() * 9000);
+    END IF;
+    
+    -- Start date after account creation
+    start_date := (account_rec.created_at + (10 + random() * 20) * INTERVAL '1 day')::DATE;
+    
+    -- End date based on frequency
+    IF payment_frequency = 'Once'::schedule_frequency_enum THEN
+      end_date := start_date;
+    ELSE
+      end_date := start_date + (30 + random() * 335)::INTEGER * INTERVAL '1 day';
+    END IF;
+    
+    -- Payment status (mostly active)
+    IF random() < 0.9 THEN
+      payment_status := 'Active'::schedule_status_enum;
+    ELSE
+      payment_status := 'Paused'::schedule_status_enum;
+    END IF;
+    
+    -- Initialize day values
+    day_val := NULL;
+    day_num := NULL;
+    yearly_date := NULL;
+    
+    -- Set specific day values based on frequency
+    IF payment_frequency = 'Weekly'::schedule_frequency_enum THEN
+      day_val := day_types[1 + floor(random() * 7)];
+    ELSIF payment_frequency = 'Monthly'::schedule_frequency_enum THEN
+      day_num := 1 + floor(random() * 28);
+    ELSIF payment_frequency IN ('Annually'::schedule_frequency_enum, 'Once'::schedule_frequency_enum) THEN
+      yearly_date := ('2024-01-01'::date + floor(random() * 365) * INTERVAL '1 day')::date;
+    END IF;
+    
+    -- Insert payment schedule
+    INSERT INTO payment_schedule (
+      amount,
+      start_date,
+      end_date,
+      status,
+      frequency,
+      day_of_week,
+      day_of_month,
+      day_of_year,
+      account_id,
+      created_at
+    )
+    VALUES (
+      payment_amount,
+      start_date,
+      end_date,
+      payment_status,
+      payment_frequency,
+      day_val,
+      day_num,
+      yearly_date,
+      account_rec.id,
+      account_rec.created_at + (5 + random() * 10) * INTERVAL '1 day'
+    );
+  END LOOP;
 END $$;
