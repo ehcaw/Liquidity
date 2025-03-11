@@ -54,7 +54,7 @@ export default function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem>
-                  <Link href="/" className="w-full">
+                  <Link href="/profile" className="w-full">
                     Profile
                   </Link>
                 </DropdownMenuItem>

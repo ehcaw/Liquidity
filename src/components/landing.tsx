@@ -51,12 +51,14 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-4">
             <Link
-              href="#"
+              href="/signin"
               className="hidden text-sm font-medium hover:underline md:inline-block"
             >
               Log in
             </Link>
-            <Button>Get Started</Button>
+            <Link href="/register">
+              <Button>Get Started</Button>
+            </Link>
           </div>
         </div>
       </header>
