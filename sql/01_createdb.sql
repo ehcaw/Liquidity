@@ -36,6 +36,7 @@ create table accounts (
   id serial,
   created_at timestamp not null default CURRENT_TIMESTAMP,
   account_number char(12) not null unique check (account_number ~ '^[0-9]{12}$'),
+  name varchar(50) not null,
   account_type account_type_enum not null,
   balance numeric(10, 2) not null default 0.00,
   status account_status_enum not null default 'Pending',
