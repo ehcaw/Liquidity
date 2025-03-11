@@ -41,3 +41,8 @@ export const ProfileFormSchema = z.object({
     .length(5, "Zipcode must be exactly 5 digits")
     .regex(/^\d+$/, "Zipcode must contain only numbers"),
 });
+
+export const CreateAccountFormSchema = z.object({
+  account_name: z.string().min(1, "Account name is required"),
+  account_type: z.enum(["Checking", "Savings"]),
+});
