@@ -21,11 +21,15 @@ import {
   FormMessage,
 } from "./ui/form";
 import { useRouter } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import { Database } from "@/types/db";
 
 type FormValues = z.infer<typeof CreateAccountFormSchema>;
+type Account = Database["public"]["Tables"]["accounts"]["Row"];
 
 const CreateAccountForm = () => {
   const router = useRouter();
+  const { fetchData } = useFetch();
   const [createAccount] = useState<FormValues>({
     account_name: "",
     account_type: "Checking",
@@ -37,17 +41,15 @@ const CreateAccountForm = () => {
   });
 
   const onSubmit = async (data: FormValues) => {
-    await fetch("/api/account", {
+    await fetchData<Account>("/api/account", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     })
-      .then((res) => {
-        if (res.status === 200) {
+      .then(() => {
           router.push("/");
-        }
       })
       .catch((err) => {
         console.log(err);
