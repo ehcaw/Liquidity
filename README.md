@@ -63,6 +63,11 @@ These are you local supabase credentials.
 In the root folder of the project, create a `.env` following the `.env.example` file. From the provided credentials, the `API URL` will be the `NEXT_PUBLIC_SUPABASE_URL` and `anon key` will be the 
 `NEXT_PUBLIC_SUPABASE_ANON_KEY` variables.
 
+Then update `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to `.github\workflows\ci.yml`
+Please be careful, there is difference, there should be space 
+ - YAML files use the `key: value` syntax with a colon and space
+ - .env files use the `key=value` syntax with an equals sign
+ 
 If you go to [http://localhost:54323/](http://localhost:54323/), you will see the Supabase dashboard.
 
 To stop the supabase containers, run:
@@ -89,3 +94,21 @@ ln -s ../../sql/01_createdb.sql supabase/migrations/01_createdb.sql
 ```
 
 I'm not sure how to create symbolic links on Windows.
+
+
+## API Responses
+API responses should follow a standard so that it's reusable. Furthermore, make sure that each route handler has proper response status codes.
+
+For 2xx responses, the response body should be:
+```
+{ data: ... }
+```
+If you are returning a `204` response status code you should use:
+```
+return new Response(null, { status: 204 });
+```
+
+For 4xx or 5xx responses, the response body should be:
+```
+{ error: ... }
+```

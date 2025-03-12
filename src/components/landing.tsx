@@ -56,7 +56,9 @@ export default function LandingPage() {
             >
               Log in
             </Link>
-            <Button>Get Started</Button>
+            <Link href="/register">
+              <Button>Get Started</Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -529,25 +531,4 @@ const mobileFeatures = [
   "Freeze/unfreeze your cards",
   "Set up alerts and notifications",
   "Locate ATMs and branches",
-];
-
-const testimonials = [
-  {
-    name: "Sarah Johnson",
-    role: "Small Business Owner",
-    quote:
-      "Liquidity has transformed how I manage my business finances. The mobile app is intuitive and the customer service is exceptional.",
-  },
-  {
-    name: "Michael Chen",
-    role: "Software Engineer",
-    quote:
-      "As someone who values security, I'm impressed with the robust protection measures. The biometric login and instant fraud alerts give me peace of mind.",
-  },
-  {
-    name: "Emily Rodriguez",
-    role: "Graduate Student",
-    quote:
-      "The fee-free checking account and easy mobile deposits have made banking so much simpler during my busy school schedule.",
-  },
 ];

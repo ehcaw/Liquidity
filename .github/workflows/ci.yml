@@ -20,4 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - name: Build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://same-with-the-`.env`
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: same-with-the-`.env`
         run: npm run build
