@@ -22,7 +22,7 @@ export default function ClientMap({ accessToken }: ClientMapProps) {
   return (
     <MapWithGeocoder
       accessToken={accessToken}
-      initialCenter={[37.334665328, -121.875329832]}
+      initialCenter={[-121.875329832, 37.334665328]}
       initialZoom={12}
     />
   );

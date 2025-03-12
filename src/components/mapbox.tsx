@@ -2,10 +2,12 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl from "mapbox-gl";
-import { Sun, Moon, ZoomIn, ZoomOut, Crosshair } from "lucide-react";
+import { Sun, Moon, ZoomIn, ZoomOut, Crosshair, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import Link from "next/link";
+import { Elsie_Swash_Caps } from "next/font/google";
 
 export interface MapWithGeocoderProps {
   accessToken: string;
@@ -72,17 +74,18 @@ export default function MapWithGeocoder({
     );
   }, [darkMode]);
 
-  const getUserLocation = useCallback(() => {
+  const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { longitude, latitude } = position.coords;
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          console.log(latitude);
           setUserLocation([longitude, latitude]);
 
           if (mapInstanceRef.current) {
-            const validCoords = validateCoordinates([longitude, latitude]);
             mapInstanceRef.current.flyTo({
-              center: validCoords,
+              center: userLocation || initialCenter,
               zoom: 14,
               essential: true,
             });
@@ -105,7 +108,7 @@ export default function MapWithGeocoder({
         },
       );
     }
-  }, []);
+  };
 
   const handleZoom = useCallback((direction: "in" | "out") => {
     if (!mapInstanceRef.current) return;
@@ -127,8 +130,8 @@ export default function MapWithGeocoder({
         ? "mapbox://styles/mapbox/navigation-night-v1"
         : "mapbox://styles/mapbox/navigation-day-v1",
       center: userLocation
-        ? new mapboxgl.LngLat(userLocation[1], userLocation[0])
-        : new mapboxgl.LngLat(initialCenter[1], initialCenter[0]),
+        ? new mapboxgl.LngLat(userLocation[0], userLocation[1])
+        : new mapboxgl.LngLat(initialCenter[0], initialCenter[1]),
       zoom: initialZoom,
       attributionControl: false,
     });
@@ -164,10 +167,13 @@ export default function MapWithGeocoder({
       if (markerRef.current) {
         markerRef.current.remove();
       }
-
-      markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
-        .setLngLat([lng, lat])
-        .addTo(mapInstanceRef.current!);
+      if (mapInstanceRef.current) {
+        markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
+          .setLngLat([lng, lat])
+          .addTo(mapInstanceRef.current);
+      } else {
+        alert("Map instance not found");
+      }
     });
 
     // Cleanup on unmount
@@ -194,6 +200,11 @@ export default function MapWithGeocoder({
     mapInstanceRef.current?.flyTo({
       center: [lng, lat],
       zoom: 12,
+    });
+    setSelectedLocation({
+      name: query,
+      lng: lng,
+      lat: lat,
     });
   };
 
@@ -269,6 +280,20 @@ export default function MapWithGeocoder({
               Lat: {selectedLocation.lat.toFixed(6)}, Lng:{" "}
               {selectedLocation.lng.toFixed(6)}
             </p>
+            <Link
+              href={`https://www.google.com/maps/search/?api=1&query=${selectedLocation.lat},${selectedLocation.lng}`}
+              target="_blank"
+            >
+              <Map className="h-4 w-4" />
+              Google
+            </Link>
+            <Link
+              href={`https://maps.apple.com/?q=${selectedLocation.lat},${selectedLocation.lng}`}
+              target="_blank"
+            >
+              <Map className="h-4 w-4" />
+              Apple
+            </Link>
           </div>
         )}
       </div>
