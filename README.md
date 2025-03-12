@@ -63,6 +63,11 @@ These are you local supabase credentials.
 In the root folder of the project, create a `.env` following the `.env.example` file. From the provided credentials, the `API URL` will be the `NEXT_PUBLIC_SUPABASE_URL` and `anon key` will be the 
 `NEXT_PUBLIC_SUPABASE_ANON_KEY` variables.
 
+Then update `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to `.github\workflows\ci.yml`
+Please be careful, there is difference, there should be space 
+ - YAML files use the `key: value` syntax with a colon and space
+ - .env files use the `key=value` syntax with an equals sign
+ 
 If you go to [http://localhost:54323/](http://localhost:54323/), you will see the Supabase dashboard.
 
 To stop the supabase containers, run:
