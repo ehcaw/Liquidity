@@ -77,6 +77,7 @@ DECLARE
   i INTEGER;
   account_number CHAR(12);
   account_type account_type_enum;
+  name varchar(50);
   balance NUMERIC(10,2);
   account_status account_status_enum;
   created_date TIMESTAMP;
@@ -95,6 +96,7 @@ BEGIN
     -- Create checking account
     account_number := LPAD(user_id::text || '01', 12, '0');
     account_type := 'Checking'::account_type_enum;
+    name := 'Checking Account ' || user_id::text;
     
     -- Higher balances for wealthy users
     IF user_id BETWEEN 9 AND 14 THEN 
@@ -111,12 +113,13 @@ BEGIN
     END IF;
     
     -- Insert checking account
-    INSERT INTO accounts (account_number, account_type, balance, status, user_id, created_at)
-    VALUES (account_number, account_type, balance, account_status, user_id, created_date);
+    INSERT INTO accounts (name, account_number, account_type, balance, status, user_id, created_at)
+    VALUES (name, account_number, account_type, balance, account_status, user_id, created_date);
     
     -- Create savings account
     account_number := LPAD(user_id::text || '02', 12, '0');
     account_type := 'Savings'::account_type_enum;
+    name := 'Savings Account ' || user_id::text;
     
     -- Higher balances for savings
     IF user_id BETWEEN 9 AND 14 THEN 
@@ -133,8 +136,8 @@ BEGIN
     END IF;
     
     -- Insert savings account (created a few days after checking)
-    INSERT INTO accounts (account_number, account_type, balance, status, user_id, created_at)
-    VALUES (account_number, account_type, balance, account_status, user_id, created_date + INTERVAL '3 day');
+    INSERT INTO accounts (name, account_number, account_type, balance, status, user_id, created_at)
+    VALUES (name, account_number, account_type, balance, account_status, user_id, created_date + INTERVAL '3 day');
   END LOOP;
 END $$;
 
