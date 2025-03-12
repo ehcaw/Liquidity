@@ -9,15 +9,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Database } from "@/types/db";
 import useFetch from "@/hooks/useFetch";
 import { formatCurrency } from "@/utils/format";
 
-type AccountStats =
-  | Database["public"]["Functions"]["get_balance_change"]["Returns"]
-  | {
-      total_balance: Database["public"]["Functions"]["get_total_balance"]["Returns"];
-    };
+type AccountStats = {
+  total_balance: number;
+  change_1_day: number;
+  change_1_week: number;
+  change_1_month: number;
+  change_3_months: number;
+  change_1_year: number;
+  change_all_time: number;
+}
 
 const AccountsStats = () => {
   const { fetchData } = useFetch();

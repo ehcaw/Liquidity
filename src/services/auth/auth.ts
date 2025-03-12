@@ -1,4 +1,4 @@
-import { ClientError, ServerError } from "@/utils/exceptions";
+import { ClientError } from "@/utils/exceptions";
 import { createClient } from "@/utils/supabase/server";
 
 export async function getAuthUser() {
