@@ -34,7 +34,7 @@ interface IProfileFormProps {
 
 const ProfileForm: React.FC<IProfileFormProps> = ({ user }) => {
   const [isSaving, setIsSaving] = useState(false);
-  const [updateduUser, setUpdatedUser] = useState<FormValues>(user);
+  const [updateduUser] = useState<FormValues>(user);
   const [states, setStates] = useState<State["code"][]>([]);
   const { fetchData } = useFetch();
   const form = useForm<FormValues>({
