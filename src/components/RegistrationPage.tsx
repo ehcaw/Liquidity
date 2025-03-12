@@ -61,7 +61,11 @@ export default function Register() {
   useEffect(() => {
     fetchData<State[]>("/api/states")
       .then((data) => {
-        setStates(data.map((state) => state.code));
+        if (data) {
+          setStates(data.map((state) => state.code));
+        } else {
+          throw Error("No data returned from states API");
+        }
       })
       .catch((error) => {
         console.error(error);
