@@ -41,6 +41,7 @@ export type Database = {
           balance: number
           created_at: string
           id: number
+          name: string
           status: Database["public"]["Enums"]["account_status_enum"]
           user_id: number
         }
@@ -50,6 +51,7 @@ export type Database = {
           balance?: number
           created_at?: string
           id?: number
+          name: string
           status?: Database["public"]["Enums"]["account_status_enum"]
           user_id: number
         }
@@ -59,6 +61,7 @@ export type Database = {
           balance?: number
           created_at?: string
           id?: number
+          name?: string
           status?: Database["public"]["Enums"]["account_status_enum"]
           user_id?: number
         }
@@ -284,7 +287,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_balance_change: {
+        Args: {
+          uid: number
+        }
+        Returns: Database["public"]["CompositeTypes"]["transaction_sums"]
+      }
+      get_total_balance: {
+        Args: {
+          uid: number
+        }
+        Returns: number
+      }
     }
     Enums: {
       account_status_enum:
@@ -316,7 +330,14 @@ export type Database = {
       user_status_enum: "Active" | "Suspended" | "Deleted" | "Locked"
     }
     CompositeTypes: {
-      [_ in never]: never
+      transaction_sums: {
+        change_1_day: number | null
+        change_1_week: number | null
+        change_1_month: number | null
+        change_3_months: number | null
+        change_1_year: number | null
+        change_all_time: number | null
+      }
     }
   }
 }

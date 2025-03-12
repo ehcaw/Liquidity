@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowRight, CheckCircle2, CreditCard, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import TermsAndConditions from "@/components/TermsAndConditions";
+import TermsAndConditions from "@/components/terms-and-conditions";
 import { Input } from "@/components/ui/input";
 import { CreateAccountFormSchema } from "@/utils/zod/form";
 import { z } from "zod";
@@ -49,7 +49,7 @@ const CreateAccountForm = () => {
       body: JSON.stringify(data),
     })
       .then(() => {
-          router.push("/");
+          router.push("/dashboard");
       })
       .catch((err) => {
         console.log(err);

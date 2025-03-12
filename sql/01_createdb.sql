@@ -8,6 +8,14 @@ create type schedule_frequency_enum as enum('Daily', 'Weekly', 'Monthly', 'Annua
 create type schedule_status_enum as enum('Active', 'Paused');
 create type day_enum as enum('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
 create type ledger_category_enum as enum('Credit', 'Debit');
+CREATE TYPE transaction_sums as (
+    change_1_day NUMERIC(10, 2),
+    change_1_week NUMERIC(10, 2),
+    change_1_month NUMERIC(10, 2),
+    change_3_months NUMERIC(10, 2),
+    change_1_year NUMERIC(10, 2),
+    change_all_time NUMERIC(10, 2)
+);
 
 create table states (
   code char(2),
@@ -92,3 +100,37 @@ create table ledger (
   foreign key(account_id) references accounts(id) on update cascade on delete cascade,
   foreign key(transaction_id) references transactions(id) on update cascade on delete cascade
 );
+
+-- Functions
+create function get_total_balance(uid int) 
+returns numeric(10, 2) as $$
+declare total_balance numeric(10, 2);
+begin
+  select coalesce(sum(balance)::numeric(10, 2), 0.00) into total_balance
+  from accounts 
+  group by user_id
+  having user_id=uid;
+
+  return total_balance;
+end;
+$$ LANGUAGE plpgsql STABLE;
+
+create function get_balance_change(uid int) 
+returns transaction_sums as $$
+declare stats transaction_sums;
+begin
+  select
+    sum(case when t.created_at >= NOW() - INTERVAL '1 day' then amount else 0 end) as change_1_day,
+    sum(case when t.created_at >= NOW() - INTERVAL '1 week' then amount else 0 end) as change_1_week,
+    sum(case when t.created_at >= NOW() - INTERVAL '1 month' then amount else 0 end) as change_1_month,
+    sum(case when t.created_at >= NOW() - INTERVAL '3 months' then amount else 0 end) as change_3_months,
+    sum(case when t.created_at >= NOW() - INTERVAL '1 year' then amount else 0 end) as change_1_year,
+    sum(amount) as change_all_time into stats
+  from transactions t
+  inner join accounts a on a.id=t.account_id
+  group by user_id
+  having user_id=uid;
+
+  return stats;
+end;
+$$ LANGUAGE plpgsql STABLE;

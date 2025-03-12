@@ -1,4 +1,3 @@
-import Navbar from "@/components/navbar";
 import Page from "@/components/templates/Page";
 import React from "react";
 
@@ -8,9 +7,8 @@ export default function AccountLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <Navbar />
-      <Page>{children}</Page>
-    </div>
+    <Page>
+      <div className="size-fit mx-auto">{children}</div>
+    </Page>
   );
 }
