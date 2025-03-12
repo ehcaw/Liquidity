@@ -1,4 +1,4 @@
-import { ClientError, ServerError } from "@/utils/exceptions";
+import { ClientError } from "@/utils/exceptions";
 import { createClient } from "@/utils/supabase/server";
 
 export async function getAuthUser() {
@@ -6,7 +6,7 @@ export async function getAuthUser() {
 
   const { data, error: authError } = await supabase.auth.getUser();
   if (authError) {
-    throw new ServerError(authError.message);
+    throw new ClientError(authError.message, 401);
   }
 
   const sessionUser = data.user;

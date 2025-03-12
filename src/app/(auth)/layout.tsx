@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import React from "react";
+import Page from "@/components/templates/Page";
 
 export default function AuthLayout({
   children,
@@ -7,8 +8,8 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="container mx-auto py-10 space-y-10">
+    <Page>
       <Card className="w-full max-w-2xl mx-auto">{children}</Card>
-    </div>
+    </Page>
   );
 }

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/footer";
 
 export default function LandingPage() {
   return (
@@ -65,7 +66,7 @@ export default function LandingPage() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white py-20 md:py-32">
-          <div className="container relative z-10 grid gap-12 md:grid-cols-2 md:items-center">
+          <div className="container mx-auto relative z-10 grid gap-12 md:grid-cols-2 md:items-center">
             <div className="space-y-6">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
                 Banking Reimagined{" "}
@@ -117,7 +118,7 @@ export default function LandingPage() {
 
         {/* Features Section */}
         <section id="features" className="py-20">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="mx-auto mb-16 max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                 Everything You Need in One Place
@@ -150,7 +151,7 @@ export default function LandingPage() {
 
         {/* Security Section */}
         <section id="security" className="bg-slate-50 py-20">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="grid gap-12 md:grid-cols-2 md:items-center">
               <div>
                 <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
@@ -222,7 +223,7 @@ export default function LandingPage() {
 
         {/* Mobile App Section */}
         <section id="mobile" className="py-20">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="grid gap-12 md:grid-cols-2 md:items-center">
               <div className="order-2 md:order-1">
                 <div className="relative mx-auto flex max-w-xs justify-center">
@@ -264,7 +265,7 @@ export default function LandingPage() {
 
         {/* Employee Dashboard Section */}
         <section id="business" className="bg-slate-50 py-20">
-          <div className="container">
+          <div className="container mx-auto">
             <div className="mx-auto mb-16 max-w-2xl text-center">
               <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
                 For Bank Employees
@@ -337,122 +338,8 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+        <Footer />
       </main>
-      <footer className="border-t bg-slate-50 py-12">
-        <div className="container">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-6 w-6 text-primary" />
-                <span className="text-xl font-bold">Liquidity</span>
-              </div>
-              <p className="mt-4 text-sm text-muted-foreground">
-                Banking reimagined for the digital age. Secure, accessible, and
-                user-friendly.
-              </p>
-            </div>
-            <div>
-              <h3 className="mb-4 text-sm font-medium">Products</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Checking Accounts
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Savings Accounts
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Credit Cards
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Loans
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Investments
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="mb-4 text-sm font-medium">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Press
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="mb-4 text-sm font-medium">Legal</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Cookie Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    FDIC Information
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary">
-                    Accessibility
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>
-              &copy; {new Date().getFullYear()} Liquidity. All rights reserved.
-            </p>
-            <p className="mt-2">
-              Liquidity is a member FDIC and an Equal Housing Lender. Banking
-              services provided by Liquidity, N.A.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
