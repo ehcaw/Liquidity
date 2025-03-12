@@ -6,7 +6,7 @@ export async function getAuthUser() {
 
   const { data, error: authError } = await supabase.auth.getUser();
   if (authError) {
-    throw new ServerError(authError.message);
+    throw new ClientError(authError.message, 401);
   }
 
   const sessionUser = data.user;
