@@ -50,7 +50,7 @@ export default function SignInForm() {
       body: JSON.stringify(values),
     })
       .then(() => {
-        router.replace("/");
+        router.replace("/dashboard");
       })
       .catch((error) => {
         console.error(error);
