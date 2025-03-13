@@ -68,9 +68,10 @@ export default function Register() {
         }
       })
       .catch((error) => {
+        alert(error.message);
         console.error(error);
       });
-  }, [fetchData]);
+  }, []);
 
   function onSubmit(values: z.infer<typeof RegisterFormSchema>) {
     setIsLoading(true);
@@ -83,7 +84,7 @@ export default function Register() {
       body: JSON.stringify(values),
     })
       .then(() => {
-        router.replace("/");
+        router.replace("/dashboard");
       })
       .catch((error) => {
         console.error(error);
