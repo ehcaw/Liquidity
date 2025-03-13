@@ -9,10 +9,8 @@ interface IPageProps {
 const Page: React.FC<IPageProps> = ({ children }) => {
   return (
     <div>
-    <Navbar />
-      <div className="max-w-7xl mx-auto py-10 space-y-10">
-        {children}
-      </div>
+      <Navbar />
+      <div className="max-w-7xl mx-auto py-10 space-y-10">{children}</div>
       <Footer />
     </div>
   );
