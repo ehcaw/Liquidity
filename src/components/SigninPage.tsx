@@ -40,24 +40,27 @@ export default function SignInForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof SignInFormSchema>) {
+  async function onSubmit(values: z.infer<typeof SignInFormSchema>) {
     setIsLoading(true);
-    fetchData<User>("/api/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
-      .then(() => {
-        router.replace("/dashboard");
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
+
+    try {
+      const user = await fetchData<User>("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
       });
+
+      // checking user role and redirecting 
+      if (user?.role === "Admin") {
+        router.replace("/admin"); // send to admin page
+      } else {
+        router.replace("/dashboard"); // send to the regular dashboard
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
