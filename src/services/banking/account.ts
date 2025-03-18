@@ -137,9 +137,23 @@ export async function getAccountStats(account_number: string) {
 
 export async function getAccountTransactions(account_number: string) {
   const supabase = await createClient();
-  const authUser = await getAuthUser();
+  await getAuthUser();
 
   const { data, error } = await supabase.rpc("get_account_transactions", { an: account_number });
+
+  if (error) {
+    throw new ServerError(error.message);
+  }
+
+  return data;
+}
+
+export async function getAccountDailyBalance(account_number: string) {
+  const supabase = await createClient();
+  await getAuthUser();
+  const account = await getUserAccount(account_number);
+
+  const { data, error } = await supabase.rpc("get_daily_balance", { aid: account.id });
 
   if (error) {
     throw new ServerError(error.message);
