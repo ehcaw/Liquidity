@@ -102,7 +102,7 @@ create table ledger (
 );
 
 -- Functions
-create function get_total_balance(uid int) 
+create or replace function get_total_balance(uid int) 
 returns numeric(10, 2) as $$
 declare total_balance numeric(10, 2);
 begin
@@ -115,7 +115,7 @@ begin
 end;
 $$ LANGUAGE plpgsql STABLE;
 
-create function get_balance_change(uid int) 
+create or replace function get_balance_change(uid int) 
 returns transaction_sums as $$
 declare stats transaction_sums;
 begin
@@ -132,5 +132,47 @@ begin
   having user_id=uid;
 
   return stats;
+end;
+$$ LANGUAGE plpgsql STABLE;
+
+create or replace function get_user_transactions(uid int)
+returns setof transactions as $$
+begin
+  return query
+    select t.*
+    from accounts a
+    inner join transactions t on t.account_id=a.id
+    where a.user_id=uid;
+end;
+$$ LANGUAGE plpgsql STABLE;
+
+create or replace function get_account_balance_change(an char(12)) 
+returns transaction_sums as $$
+declare stats transaction_sums;
+begin
+  select
+    sum(case when t.created_at >= NOW() - INTERVAL '1 day' then amount else 0 end) as change_1_day,
+    sum(case when t.created_at >= NOW() - INTERVAL '1 week' then amount else 0 end) as change_1_week,
+    sum(case when t.created_at >= NOW() - INTERVAL '1 month' then amount else 0 end) as change_1_month,
+    sum(case when t.created_at >= NOW() - INTERVAL '3 months' then amount else 0 end) as change_3_months,
+    sum(case when t.created_at >= NOW() - INTERVAL '1 year' then amount else 0 end) as change_1_year,
+    sum(amount) as change_all_time into stats
+  from transactions t
+  inner join accounts a on t.account_id=a.id
+  where a.account_number=an
+  group by a.account_number;
+
+  return stats;
+end;
+$$ LANGUAGE plpgsql STABLE;
+
+create or replace function get_account_transactions(an char(12))
+returns setof transactions as $$
+begin
+  return query
+    select t.*
+    from accounts a
+    inner join transactions t on t.account_id=a.id
+    where a.account_number=an;
 end;
 $$ LANGUAGE plpgsql STABLE;
