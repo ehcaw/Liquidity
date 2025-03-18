@@ -27,7 +27,7 @@ type DailyBalance =
 
 interface IAccountStatsProps {
   stats: AccountStats;
-  dailyBalance: DailyBalance;
+  dailyBalance?: DailyBalance;
 }
 
 const AccountsStats: React.FC<IAccountStatsProps> = ({ stats, dailyBalance }) => {
@@ -115,7 +115,9 @@ const AccountsStats: React.FC<IAccountStatsProps> = ({ stats, dailyBalance }) =>
                 </CardHeader>
               </Card>
             </div>
-            <AccountPeriodChart dailyBalance={dailyBalance} />
+            {dailyBalance && (
+              <AccountPeriodChart dailyBalance={dailyBalance} />
+            )}
           </div>
         </CardContent>
       </Tabs>

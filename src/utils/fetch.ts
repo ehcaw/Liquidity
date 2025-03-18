@@ -18,7 +18,7 @@ export const fetchData = async<T>(path: string,options?: RequestInit): Promise<T
   } else if (response.status === 404) {
     notFound();
   } else if (response.status >= 500) {
-    redirect('/500');
+    redirect('/internal-error');
   }
   return data.data;
 };

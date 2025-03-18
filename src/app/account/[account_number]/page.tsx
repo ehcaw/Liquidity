@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/utils/isAuthenticated";
 import { fetchData } from "@/utils/fetch";
 import  AccountHeader from "@/components/accounts-header";
-import BalanceChart from "@/components/balance-chart";
 
 type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 type Account = Database["public"]["Tables"]["accounts"]["Row"];

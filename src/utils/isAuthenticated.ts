@@ -9,7 +9,7 @@ export const isAuthenticated = async () => {
     if (error instanceof ClientError) {
       redirect('/signin')
     } else if (error instanceof ServerError) {
-      redirect('/500')
+      redirect('/internal-error')
     }
   }
 };
