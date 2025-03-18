@@ -2,7 +2,7 @@ import { getAccountStats } from "@/services/banking/account";
 import { ClientError, ServerError } from "@/utils/exceptions";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, {params}: {params: Promise<{ account_number: string }>}) {
+export async function GET(_: NextRequest, {params}: {params: Promise<{ account_number: string }>}) {
   const { account_number } = await params;
   try {
     const stats = await getAccountStats(account_number);

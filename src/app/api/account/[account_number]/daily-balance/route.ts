@@ -1,13 +1,15 @@
-import { getUserAccount } from "@/services/banking/account";
+import { getAccountDailyBalance } from "@/services/banking/account";
 import { ClientError, ServerError } from "@/utils/exceptions";
 import { NextRequest } from "next/server";
 
-export async function GET(_: NextRequest, {params}: {params: Promise<{ account_number: string }>}) {
+export async function GET(
+  _: NextRequest,
+  { params }: { params: Promise<{ account_number: string }> },
+) {
   const { account_number } = await params;
   try {
-    const accounts = await getUserAccount(account_number);
-
-    return Response.json({ data: accounts });
+    const balance = await getAccountDailyBalance(account_number);
+    return Response.json({ data: balance });
   } catch (error) {
     console.log(error);
     if (error instanceof ClientError) {
