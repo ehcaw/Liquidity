@@ -314,6 +314,12 @@ export type Database = {
         }
         Returns: Database["public"]["CompositeTypes"]["transaction_sums"]
       }
+      get_daily_balance: {
+        Args: {
+          aid: number
+        }
+        Returns: Database["public"]["CompositeTypes"]["daily_balance"][]
+      }
       get_total_balance: {
         Args: {
           uid: number
@@ -366,6 +372,10 @@ export type Database = {
       user_status_enum: "Active" | "Suspended" | "Deleted" | "Locked"
     }
     CompositeTypes: {
+      daily_balance: {
+        date: string | null
+        balance: number | null
+      }
       transaction_sums: {
         change_1_day: number | null
         change_1_week: number | null

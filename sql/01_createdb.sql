@@ -8,13 +8,17 @@ create type schedule_frequency_enum as enum('Daily', 'Weekly', 'Monthly', 'Annua
 create type schedule_status_enum as enum('Active', 'Paused');
 create type day_enum as enum('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
 create type ledger_category_enum as enum('Credit', 'Debit');
-CREATE TYPE transaction_sums as (
+create type transaction_sums as (
     change_1_day NUMERIC(10, 2),
     change_1_week NUMERIC(10, 2),
     change_1_month NUMERIC(10, 2),
     change_3_months NUMERIC(10, 2),
     change_1_year NUMERIC(10, 2),
     change_all_time NUMERIC(10, 2)
+);
+create type daily_balance as (
+  date date,
+  balance numeric(10, 2)
 );
 
 create table states (
@@ -102,8 +106,9 @@ create table ledger (
 );
 
 -- Functions
-create or replace function get_total_balance(uid int) 
-returns numeric(10, 2) as $$
+create or replace function get_total_balance(uid int)
+returns numeric(10, 2)
+as $$
 declare total_balance numeric(10, 2);
 begin
   select coalesce(sum(balance)::numeric(10, 2), 0.00) into total_balance
@@ -113,10 +118,15 @@ begin
 
   return total_balance;
 end;
-$$ LANGUAGE plpgsql STABLE;
+$$
+language plpgsql
+stable
+;
 
-create or replace function get_balance_change(uid int) 
-returns transaction_sums as $$
+create or replace function get_balance_change(uid int)
+returns transaction_sums
+as
+    $$
 declare stats transaction_sums;
 begin
   select
@@ -133,10 +143,14 @@ begin
 
   return stats;
 end;
-$$ LANGUAGE plpgsql STABLE;
+$$
+language plpgsql
+stable
+;
 
 create or replace function get_user_transactions(uid int)
-returns setof transactions as $$
+returns setof transactions
+as $$
 begin
   return query
     select t.*
@@ -144,10 +158,15 @@ begin
     inner join transactions t on t.account_id=a.id
     where a.user_id=uid;
 end;
-$$ LANGUAGE plpgsql STABLE;
+$$
+language plpgsql
+stable
+;
 
-create or replace function get_account_balance_change(an char(12)) 
-returns transaction_sums as $$
+create or replace function get_account_balance_change(an char(12))
+returns transaction_sums
+as
+    $$
 declare stats transaction_sums;
 begin
   select
@@ -164,10 +183,14 @@ begin
 
   return stats;
 end;
-$$ LANGUAGE plpgsql STABLE;
+$$
+language plpgsql
+stable
+;
 
 create or replace function get_account_transactions(an char(12))
-returns setof transactions as $$
+returns setof transactions
+as $$
 begin
   return query
     select t.*
@@ -175,4 +198,27 @@ begin
     inner join transactions t on t.account_id=a.id
     where a.account_number=an;
 end;
-$$ LANGUAGE plpgsql STABLE;
+$$
+language plpgsql
+stable
+;
+
+create or replace function get_daily_balance(aid int)
+returns setof daily_balance
+as $$
+begin
+  return query
+    select date(created_at) as date, balance
+    from transactions
+    where created_at in (
+        select max(created_at)
+        from transactions
+        where account_id = aid
+        group by date(created_at)
+    )
+    order by date;
+end;
+$$
+language plpgsql
+stable
+;
