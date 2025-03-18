@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { formatCurrency } from "@/utils/format";
+import AccountPeriodChart from "./balance-chart";
+import { Database } from "@/types/db";
 
 export type AccountStats = {
   total_balance: number;
@@ -20,12 +22,15 @@ export type AccountStats = {
   change_1_year: number;
   change_all_time: number;
 }
+type DailyBalance =
+  Database["public"]["Functions"]["get_daily_balance"]["Returns"];
 
 interface IAccountStatsProps {
   stats: AccountStats;
+  dailyBalance: DailyBalance;
 }
 
-const AccountsStats: React.FC<IAccountStatsProps> = ({ stats }) => {
+const AccountsStats: React.FC<IAccountStatsProps> = ({ stats, dailyBalance }) => {
   return (
     <Card>
       <Tabs defaultValue="1M">
@@ -110,6 +115,7 @@ const AccountsStats: React.FC<IAccountStatsProps> = ({ stats }) => {
                 </CardHeader>
               </Card>
             </div>
+            <AccountPeriodChart dailyBalance={dailyBalance} />
           </div>
         </CardContent>
       </Tabs>
