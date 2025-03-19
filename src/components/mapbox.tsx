@@ -1,8 +1,8 @@
 "use client";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { SearchBox } from "@mapbox/search-js-react";
-import mapboxgl, { InteractionEvent } from "mapbox-gl";
-import { Sun, Moon, ZoomIn, ZoomOut, Crosshair, Map, X } from "lucide-react";
+import mapboxgl from "mapbox-gl";
+import { Sun, Moon, ZoomIn, ZoomOut, Map, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
