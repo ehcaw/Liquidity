@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -9,10 +9,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import useFetch from "@/hooks/useFetch";
 import { formatCurrency } from "@/utils/format";
+import AccountPeriodChart from "./balance-chart";
+import { Database } from "@/types/db";
 
-type AccountStats = {
+export type AccountStats = {
   total_balance: number;
   change_1_day: number;
   change_1_week: number;
@@ -21,30 +22,15 @@ type AccountStats = {
   change_1_year: number;
   change_all_time: number;
 }
+type DailyBalance =
+  Database["public"]["Functions"]["get_daily_balance"]["Returns"];
 
-const AccountsStats = () => {
-  const { fetchData } = useFetch();
-  const [stats, setStats] = useState<AccountStats>({
-    total_balance: 0,
-    change_1_day: 0,
-    change_1_week: 0,
-    change_1_month: 0,
-    change_3_months: 0,
-    change_1_year: 0,
-    change_all_time: 0
-  });
+interface IAccountStatsProps {
+  stats: AccountStats;
+  dailyBalance?: DailyBalance;
+}
 
-  useEffect(() => {
-    fetchData<AccountStats>("/api/account/stats")
-      .then((data) => {
-        if (data === null) return;
-        setStats(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
+const AccountsStats: React.FC<IAccountStatsProps> = ({ stats, dailyBalance }) => {
   return (
     <Card>
       <Tabs defaultValue="1M">
@@ -68,7 +54,7 @@ const AccountsStats = () => {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <Card>
                 <CardHeader className="p-4">
-                  <CardDescription>Total Balance</CardDescription>
+                  <CardDescription>Balance</CardDescription>
                   <CardTitle className="text-2xl">
                     {formatCurrency(stats.total_balance)}
                   </CardTitle>
@@ -129,6 +115,9 @@ const AccountsStats = () => {
                 </CardHeader>
               </Card>
             </div>
+            {dailyBalance && (
+              <AccountPeriodChart dailyBalance={dailyBalance} />
+            )}
           </div>
         </CardContent>
       </Tabs>

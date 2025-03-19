@@ -6,9 +6,5 @@ export default function AccountLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <Page>
-      <div className="size-fit mx-auto">{children}</div>
-    </Page>
-  );
+  return <Page>{children}</Page>;
 }

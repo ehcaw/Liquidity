@@ -10,8 +10,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Database } from "@/types/db";
-import useFetch from "@/hooks/useFetch";
-import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -24,21 +22,11 @@ import { formatCurrency, formatDate } from "@/utils/format";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
 
-export function AccountsTable() {
-  const { fetchData } = useFetch();
-  const [accounts, setAccounts] = useState<Account[]>([]);
+interface IAccountsTableProps {
+  accounts: Account[];
+}
 
-  useEffect(() => {
-    fetchData<Account[]>("/api/account")
-      .then((data) => {
-        setAccounts(data || []);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-
+export default function AccountsTable({ accounts }: IAccountsTableProps) {
   return (
     <Card>
       <CardHeader>
@@ -47,7 +35,7 @@ export function AccountsTable() {
             <CardTitle>Your Accounts</CardTitle>
             <CardDescription>Manage your bank accounts</CardDescription>
           </div>
-          <Link href="account/create">
+          <Link href="/account/create">
             <Button>Create Account</Button>
           </Link>
         </div>
@@ -81,7 +69,7 @@ export function AccountsTable() {
                   <TableRow key={account.id}>
                     <TableCell className="font-medium">
                       <Link
-                        href={`/dashboard`}
+                        href={`/account/${account.account_number}`}
                         className="hover:underline text-primary"
                       >
                         {account.name}

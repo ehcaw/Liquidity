@@ -1,9 +1,13 @@
-import CreateAccountForm from "@/components/create-account-form"
+import CreateAccountForm from "@/components/create-account-form";
+import { isAuthenticated } from "@/utils/isAuthenticated";
 
-const CreateAccount = () => {
+const CreateAccount = async () => {
+  await isAuthenticated();
   return (
-    <CreateAccountForm />
-  )
-}
+    <div className="size-fit mx-auto">
+      <CreateAccountForm />
+    </div>
+  );
+};
 
-export default CreateAccount
+export default CreateAccount;

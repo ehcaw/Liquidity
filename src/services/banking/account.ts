@@ -1,4 +1,4 @@
-import { ServerError } from "@/utils/exceptions";
+import { ClientError, ServerError } from "@/utils/exceptions";
 import { createClient } from "@/utils/supabase/server";
 import { getAuthUser } from "@/services/auth/auth";
 import { Database } from "@/types/db";
@@ -42,6 +42,24 @@ export async function getUserAccounts() {
   }
 
   return data;
+}
+
+export async function getUserAccount(account_number: string) {
+  const supabase = await createClient();
+  await getAuthUser();
+
+  const { data, error: selectError } = await supabase
+    .from("accounts")
+    .select()
+    .eq("account_number", account_number);
+  if (selectError) {
+    throw new ServerError(selectError.message);
+  }
+  if (data.length === 0) {
+    throw new ClientError("Account not found", 404);
+  }
+
+  return data[0];
 }
 
 export async function createAccount(name: string, accountType: AccountType) {
@@ -88,4 +106,72 @@ export async function getAllAccountStats() {
   }
 
   return { ...change, total_balance: balance };
+}
+
+export async function getAccountStats(account_number: string) {
+  const supabase = await createClient();
+  const authUser = await getAuthUser();
+
+  const { data: balance, error: balanceError } = await supabase
+    .from("accounts")
+    .select("balance")
+    .eq("account_number", account_number)
+    .eq("user_id", authUser.id);
+  if (balanceError) {
+    throw new ServerError(balanceError.message);
+  }
+  if (balance.length === 0) {
+    throw new ClientError("Account not found", 404);
+  }
+
+  const { data: change, error: changeError } = await supabase.rpc(
+    "get_account_balance_change",
+    { an: account_number },
+  );
+  if (changeError) {
+    throw new ServerError(changeError.message);
+  }
+
+  return { ...change, total_balance: balance[0].balance };
+}
+
+export async function getAccountTransactions(account_number: string) {
+  const supabase = await createClient();
+  await getAuthUser();
+
+  const { data, error } = await supabase.rpc("get_account_transactions", { an: account_number });
+
+  if (error) {
+    throw new ServerError(error.message);
+  }
+
+  return data;
+}
+
+export async function getAccountDailyBalance(account_number: string) {
+  const supabase = await createClient();
+  await getAuthUser();
+  const account = await getUserAccount(account_number);
+
+  const { data, error } = await supabase.rpc("get_daily_balance", { aid: account.id });
+
+  if (error) {
+    throw new ServerError(error.message);
+  }
+
+  return data;
+}
+
+export async function verifyUserAccount(account_number: string) {
+  const authUser = await getAuthUser();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("accounts")
+    .select()
+    .eq("account_number", account_number)
+    .eq("user_id", authUser.id);
+  if (error || !data.length) {
+    throw new ClientError(error?.message || "Account not found", 404);
+  }
 }
