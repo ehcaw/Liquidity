@@ -16,3 +16,7 @@ export const formatDate = (dateString: string) => {
     day: "numeric",
   });
 };
+
+export const formatAccountNumber = (accountNumber: string) => {
+  return accountNumber.replace(/(\d{4})(\d{4})(\d{4})/, "$1-$2-$3")
+}

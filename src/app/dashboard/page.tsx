@@ -1,7 +1,19 @@
 import AccountsStats from "@/components/accounts-stats";
-import { AccountsTable } from "@/components/accounts-table";
+import type { AccountStats } from "@/components/accounts-stats";
+import AccountsTable from "@/components/accounts-table";
+import TransactionsTable from "@/components/transaction-table";
+import { Database } from "@/types/db";
+import { isAuthenticated } from "@/utils/isAuthenticated";
+import { fetchData } from "@/utils/fetch";
 
-export default function DashboardPage() {
+type Account = Database["public"]["Tables"]["accounts"]["Row"];
+type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
+
+export default async function DashboardPage() {
+  await isAuthenticated();
+  const stats = await fetchData<AccountStats>('/api/account/stats')
+  const accounts = await fetchData<Account[]>('/api/account')
+  const transactions = await fetchData<Transaction[]>('/api/account/transactions')
   return (
     <div className="flex flex-col gap-6 p-6">
       <div className="flex flex-col gap-2">
@@ -10,8 +22,9 @@ export default function DashboardPage() {
           Overview of your financial accounts and balances
         </p>
       </div>
-      <AccountsStats />
-      <AccountsTable />
+      <AccountsStats stats={stats} />
+      <AccountsTable accounts={accounts} />
+      <TransactionsTable transactions={transactions} />
     </div>
   );
 }
