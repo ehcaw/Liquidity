@@ -19,15 +19,11 @@ export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "INITIAL_SESSION") {
-        setUser(null);
-      } else if (event === "SIGNED_IN") {
-        setUser(session?.user || null);
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-      }
-    });
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || null);
+    };
+    getUser();
   }, [supabase.auth]);
 
   async function logout() {
@@ -61,6 +57,11 @@ export default function Navbar() {
                 <DropdownMenuItem>
                   <Link href="/" className="w-full">
                     Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/dashboard/map" className="w-full">
+                    Branches
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

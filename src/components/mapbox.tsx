@@ -2,12 +2,12 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl from "mapbox-gl";
-import { Sun, Moon, ZoomIn, ZoomOut, Crosshair, Map } from "lucide-react";
+import { Sun, Moon, ZoomIn, ZoomOut, Map, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import Link from "next/link";
-import { Elsie_Swash_Caps } from "next/font/google";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 export interface MapWithGeocoderProps {
   accessToken: string;
@@ -17,24 +17,6 @@ export interface MapWithGeocoderProps {
   width?: number | string;
   showControls?: boolean;
   className?: string;
-}
-
-function validateCoordinates(coords: [number, number]): [number, number] {
-  const [lng, lat] = coords;
-
-  // Ensure longitude is between -180 and 180
-  if (lng < -180 || lng > 180) {
-    console.error(`Invalid longitude: ${lng}`);
-    return [-122, 37]; // Default to San Francisco
-  }
-
-  // Ensure latitude is between -90 and 90
-  if (lat < -90 || lat > 90) {
-    console.error(`Invalid latitude: ${lat}`);
-    return [-122, 37]; // Default to San Francisco
-  }
-
-  return [lng, lat];
 }
 
 export default function MapWithGeocoder({
@@ -52,9 +34,10 @@ export default function MapWithGeocoder({
   const [mapLoaded, setMapLoaded] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [darkMode, setDarkMode] = useState(false);
-  const [userLocation, setUserLocation] = useState<[number, number] | null>(
-    null,
-  );
+  const [userLocation, setUserLocation] = useState<[number, number] | null>([
+    initialCenter[0],
+    initialCenter[1],
+  ]);
   const [selectedLocation, setSelectedLocation] = useState<{
     lng: number;
     lat: number;
@@ -74,7 +57,7 @@ export default function MapWithGeocoder({
     );
   }, [darkMode]);
 
-  const getUserLocation = () => {
+  const getUserLocation = (): [number, number] => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -102,12 +85,15 @@ export default function MapWithGeocoder({
               .setLngLat([longitude, latitude])
               .addTo(mapInstanceRef.current);
           }
+          return [longitude, latitude];
         },
         (error) => {
           console.error("Error getting user location:", error);
+          return [initialCenter[0], initialCenter[1]];
         },
       );
     }
+    return [initialCenter[0], initialCenter[1]];
   };
 
   const handleZoom = useCallback((direction: "in" | "out") => {
@@ -117,6 +103,11 @@ export default function MapWithGeocoder({
     mapInstanceRef.current.zoomTo(
       direction === "in" ? currentZoom + 1 : currentZoom - 1,
     );
+  }, []);
+
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    setUserLocation(getUserLocation());
   }, []);
 
   useEffect(() => {
@@ -134,7 +125,9 @@ export default function MapWithGeocoder({
         : new mapboxgl.LngLat(initialCenter[0], initialCenter[1]),
       zoom: initialZoom,
       attributionControl: false,
+      interactive: false,
     });
+    mapInstanceRef.current.getCanvas().style.pointerEvents = "none";
 
     // Add navigation control
     if (showControls) {
@@ -206,6 +199,16 @@ export default function MapWithGeocoder({
       lng: lng,
       lat: lat,
     });
+    if (markerRef.current) {
+      markerRef.current.remove();
+    }
+    if (mapInstanceRef.current) {
+      markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
+        .setLngLat([lng, lat])
+        .addTo(mapInstanceRef.current);
+    } else {
+      alert("Map instance not found");
+    }
   };
 
   return (
@@ -216,6 +219,7 @@ export default function MapWithGeocoder({
             <SearchBox
               accessToken={accessToken}
               mapboxgl={mapboxgl}
+              map={mapInstanceRef.current ? mapInstanceRef.current : undefined}
               value={inputValue}
               onChange={(value: string) => {
                 setInputValue(value);
@@ -231,7 +235,6 @@ export default function MapWithGeocoder({
                 language: "en",
                 country: "US",
               }}
-              marker={false}
             />
           </div>
 
@@ -244,14 +247,14 @@ export default function MapWithGeocoder({
             >
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
-            <Button
+            {/* <Button
               variant="outline"
               size="icon"
               onClick={getUserLocation}
               title="Get My Location"
             >
               <Crosshair size={18} />
-            </Button>
+            </Button> */}
             <Button
               variant="outline"
               size="icon"
@@ -272,28 +275,45 @@ export default function MapWithGeocoder({
         </div>
 
         {selectedLocation && (
-          <div className="text-sm bg-white dark:bg-gray-700 p-2 rounded-md">
-            <p className="font-medium">
-              {selectedLocation.name || "Selected Location"}
-            </p>
-            <p className="text-gray-500 dark:text-gray-300">
-              Lat: {selectedLocation.lat.toFixed(6)}, Lng:{" "}
-              {selectedLocation.lng.toFixed(6)}
-            </p>
-            <Link
-              href={`https://www.google.com/maps/search/?api=1&query=${selectedLocation.lat},${selectedLocation.lng}`}
-              target="_blank"
-            >
-              <Map className="h-4 w-4" />
-              Google
-            </Link>
-            <Link
-              href={`https://maps.apple.com/?q=${selectedLocation.lat},${selectedLocation.lng}`}
-              target="_blank"
-            >
-              <Map className="h-4 w-4" />
-              Apple
-            </Link>
+          <div className="absolute bottom-4 right-4 z-10 w-72 bg-card rounded-lg border shadow-lg overflow-hidden">
+            <div className="p-4 border-b">
+              <button
+                onClick={() => setSelectedLocation(null)}
+                className="absolute top-3 right-3 h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                aria-label="Close location details"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <h4 className="font-semibold text-md">
+                {selectedLocation.name || "Selected Location"}
+              </h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                Coordinates: {selectedLocation.lat.toFixed(6)},{" "}
+                {selectedLocation.lng.toFixed(6)}
+              </p>
+            </div>
+
+            <div className="p-3 bg-muted/30">
+              <p className="text-sm font-medium mb-2">Open in Maps:</p>
+              <div className="flex gap-3">
+                <Link
+                  href={`https://www.google.com/maps/search/?api=1&query=${selectedLocation.lat},${selectedLocation.lng}`}
+                  target="_blank"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                >
+                  <Map className="h-3.5 w-3.5" />
+                  Google Maps
+                </Link>
+                <Link
+                  href={`https://maps.apple.com/?q=${selectedLocation.lat},${selectedLocation.lng}`}
+                  target="_blank"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                >
+                  <Map className="h-3.5 w-3.5" />
+                  Apple Maps
+                </Link>
+              </div>
+            </div>
           </div>
         )}
       </div>
