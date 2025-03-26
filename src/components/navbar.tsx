@@ -64,6 +64,11 @@ export default function Navbar() {
                     Branches
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/dashboard/check-deposit" className="w-full">
+                    Check Deposit
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={logout}
