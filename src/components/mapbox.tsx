@@ -183,31 +183,36 @@ export default function MapWithGeocoder({
   ]);
 
   const handleSearchResult = (query: string, lng: number, lat: number) => {
-    console.log(query);
-    if (!query.toLowerCase().includes("chase")) {
+    console.log("search result ", query);
+    const lowercaseQuery = query.toLowerCase();
+    if (
+      !lowercaseQuery.includes("chase bank") &&
+      !lowercaseQuery.includes("chase atm")
+    ) {
       toast(
         "Cannot locate this location. Please select a different Chase location",
       );
       return;
-    }
-    mapInstanceRef.current?.flyTo({
-      center: [lng, lat],
-      zoom: 12,
-    });
-    setSelectedLocation({
-      name: query,
-      lng: lng,
-      lat: lat,
-    });
-    if (markerRef.current) {
-      markerRef.current.remove();
-    }
-    if (mapInstanceRef.current) {
-      markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
-        .setLngLat([lng, lat])
-        .addTo(mapInstanceRef.current);
     } else {
-      alert("Map instance not found");
+      mapInstanceRef.current?.flyTo({
+        center: [lng, lat],
+        zoom: 12,
+      });
+      setSelectedLocation({
+        name: query,
+        lng: lng,
+        lat: lat,
+      });
+      if (markerRef.current) {
+        markerRef.current.remove();
+      }
+      if (mapInstanceRef.current) {
+        markerRef.current = new mapboxgl.Marker({ color: "#FF0000" })
+          .setLngLat([lng, lat])
+          .addTo(mapInstanceRef.current);
+      } else {
+        alert("Map instance not found");
+      }
     }
   };
 
@@ -222,18 +227,30 @@ export default function MapWithGeocoder({
               map={mapInstanceRef.current ? mapInstanceRef.current : undefined}
               value={inputValue}
               onChange={(value: string) => {
-                setInputValue(value);
+                if (
+                  value.toLowerCase().includes("chase bank") ||
+                  value.toLowerCase().includes("chase atm")
+                ) {
+                  setInputValue(value);
+                  return;
+                }
               }}
-              onRetrieve={(res) =>
-                handleSearchResult(
-                  res.features[0].properties.name,
-                  res.features[0].geometry.coordinates[0],
-                  res.features[0].geometry.coordinates[1],
-                )
-              }
+              onRetrieve={(res) => {
+                const locationName = res.features[0].properties.name;
+                const [lng, lat] = res.features[0].geometry.coordinates;
+                if (
+                  locationName.toLowerCase().includes("chase bank") ||
+                  locationName.toLowerCase().includes("chase atm")
+                ) {
+                  handleSearchResult(locationName, lng, lat);
+                  return;
+                }
+                handleSearchResult(locationName, lng, lat);
+              }}
               options={{
                 language: "en",
                 country: "US",
+                // Add filtering to only show Chase Bank locations
               }}
             />
           </div>
