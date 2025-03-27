@@ -36,6 +36,7 @@ import {
   SelectValue,
   SelectContent,
 } from "./ui/select";
+import toast from "sonner";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
 
@@ -100,6 +101,15 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
     }
     // update the account balance
     // await fetch('/api/update_balance', method: "POST", body: JSON.stringify(amount: am));
+    const checkDepositResponse = await fetch("/api/transactions", {
+      method: "PUT",
+      body: JSON.stringify({ amount: am, account_number: account }),
+    });
+    if (!checkDepositResponse.ok) {
+      alert("Your check could not be deposited.");
+      return;
+    }
+    toast("Your check has been deposited.");
   };
 
   return (
