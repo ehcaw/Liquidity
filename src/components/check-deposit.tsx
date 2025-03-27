@@ -59,16 +59,7 @@ export default function CheckDeposit() {
     if (!checkImage || !amount || !confirmTerms) {
       return;
     }
-
     setIsSubmitting(true);
-
-    // Simulate API call - replace with your actual backend implementation
-    // setTimeout(() => {
-    //   setIsSubmitting(false);
-    //   // Navigate to success page or show success message
-    //   router.push("/deposit-success");
-    // }, 2000);
-    //
     const userId = (await supabase.auth.getUser()).data.user?.id;
     const formData = new FormData();
     formData.append("file", checkImage);
@@ -82,6 +73,22 @@ export default function CheckDeposit() {
       method: "POST",
       body: JSON.stringify({ url: uploadLink }),
     });
+    if (!checkScanResponse.ok) {
+      alert("Your check could not be uploaded.");
+      return;
+    }
+    const {
+      check_or_not,
+      name,
+      amount: am,
+      date,
+    } = await checkScanResponse.json();
+    if (!check_or_not) {
+      alert("Please upload a valid check.");
+      return;
+    }
+    // update the account balance
+    // await fetch('/api/update_balance', method: "POST", body: JSON.stringify(amount: am));
   };
 
   return (
