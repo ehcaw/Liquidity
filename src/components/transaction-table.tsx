@@ -152,6 +152,9 @@ export default function TransactionsTable({
             <Link href="/transfers">
               <Button>Transfer Money</Button>
             </Link>
+            <Link href="/dashboard/check-deposit">
+              <Button>Deposit Check</Button>
+            </Link>
           </div>
         </div>
       </CardHeader>
