@@ -51,15 +51,16 @@ export async function getUserAccount(account_number: string) {
   const { data, error: selectError } = await supabase
     .from("accounts")
     .select()
-    .eq("account_number", account_number);
+    .eq("account_number", account_number)
+    .single();
   if (selectError) {
     throw new ServerError(selectError.message);
   }
-  if (data.length === 0) {
+  if (!data) {
     throw new ClientError("Account not found", 404);
   }
 
-  return data[0];
+  return data;
 }
 
 export async function createAccount(name: string, accountType: AccountType) {
@@ -139,7 +140,9 @@ export async function getAccountTransactions(account_number: string) {
   const supabase = await createClient();
   await getAuthUser();
 
-  const { data, error } = await supabase.rpc("get_account_transactions", { an: account_number });
+  const { data, error } = await supabase.rpc("get_account_transactions", {
+    an: account_number,
+  });
 
   if (error) {
     throw new ServerError(error.message);
@@ -153,7 +156,9 @@ export async function getAccountDailyBalance(account_number: string) {
   await getAuthUser();
   const account = await getUserAccount(account_number);
 
-  const { data, error } = await supabase.rpc("get_daily_balance", { aid: account.id });
+  const { data, error } = await supabase.rpc("get_daily_balance", {
+    aid: account.id,
+  });
 
   if (error) {
     throw new ServerError(error.message);
