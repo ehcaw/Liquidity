@@ -223,6 +223,54 @@ language plpgsql
 stable
 ;
 
+CREATE OR REPLACE FUNCTION transfer_funds(
+  p_from_account CHAR(12),
+  p_to_account CHAR(12),
+  p_amount NUMERIC(10,2)
+) RETURNS void AS $$
+DECLARE
+  v_from_balance NUMERIC(10,2);
+  v_to_balance NUMERIC(10,2);
+BEGIN
+  BEGIN
+    IF p_from_account IS NOT NULL THEN
+      SELECT balance INTO v_from_balance
+      FROM accounts
+      WHERE account_number = p_from_account
+      FOR UPDATE;
+
+      IF NOT FOUND THEN
+        RAISE EXCEPTION 'From account % not found', p_from_account;
+      END IF;
+
+      IF v_from_balance < p_amount THEN
+        RAISE EXCEPTION 'Insufficient funds in account %', p_from_account;
+      END IF;
+
+      UPDATE accounts
+      SET balance = balance - p_amount
+      WHERE account_number = p_from_account;
+    END IF;
+
+    SELECT balance INTO v_to_balance
+    FROM accounts
+    WHERE account_number = p_to_account
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'To account % not found', p_to_account;
+    END IF;
+
+    UPDATE accounts
+    SET balance = balance + p_amount
+    WHERE account_number = p_to_account;
+
+  EXCEPTION WHEN OTHERS THEN
+    RAISE;
+  END;
+END;
+$$ LANGUAGE plpgsql;
+
 insert into storage.buckets (id, name, public) values ('checks', 'checks', false);
 
 create policy "Any authenticated user can view checks" on storage.objects for select

@@ -180,3 +180,17 @@ export async function verifyUserAccount(account_number: string) {
     throw new ClientError(error?.message || "Account not found", 404);
   }
 }
+
+export async function transferFunds(
+  to_account_number: string,
+  amount: number,
+  from_account_number?: string,
+) {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("transfer_funds", {
+    p_from_account: from_account_number || null,
+    p_to_account: to_account_number,
+    p_amount: amount,
+  });
+  if (error) throw new ClientError(`Transfer failed: ${error.message}`, 400);
+}

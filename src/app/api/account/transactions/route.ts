@@ -1,3 +1,4 @@
+import { transferFunds } from "@/services/banking/account";
 import { getAllTransactions } from "@/services/banking/transaction";
 import { ClientError, ServerError } from "@/utils/exceptions";
 
@@ -28,5 +29,19 @@ export async function GET() {
         status: 500,
       },
     );
+  }
+}
+
+export async function PUT(req: Request) {
+  const { amount, accountNumber } = await req.json();
+  try {
+    await transferFunds(accountNumber, amount);
+  } catch (error) {
+    if (error instanceof ClientError) {
+      return Response.json({ error: error.message }, { status: error.status });
+    } else if (error instanceof ServerError) {
+      return Response.json({ error: error.message }, { status: error.status });
+    }
+    return Response.json({ error: error }, { status: 500 });
   }
 }
