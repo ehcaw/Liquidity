@@ -112,7 +112,7 @@ as $$
 declare total_balance numeric(10, 2);
 begin
   select coalesce(sum(balance)::numeric(10, 2), 0.00) into total_balance
-  from accounts 
+  from accounts
   group by user_id
   having user_id=uid;
 
@@ -222,3 +222,11 @@ $$
 language plpgsql
 stable
 ;
+
+insert into storage.buckets (id, name, public) values ('checks', 'checks', false);
+
+create policy "Any authenticated user can view checks" on storage.objects for select
+using ( bucket_id = 'checks' and auth.role() = 'authenticated' and (metadata->>'userId')::text = auth.uid()::text);
+
+create policy "Any authenticated user can insert checks" on storage.objects for select
+using (bucket_id = 'checks'and auth.role() = 'authenticated');

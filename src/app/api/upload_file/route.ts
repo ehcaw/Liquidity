@@ -18,9 +18,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const now = Date.now();
     const { data: upload, error } = await supabase.storage
       .from("checks")
-      .upload(`check-user_id=${userId}-${Date.now()}`, checkImage);
+      .upload(`check-user_id=${userId}-${now}`, checkImage, {
+        metadata: { userId: userId, uploadedAt: now },
+      });
     if (error) {
       throw new ServerError("Check upload failed");
     }
