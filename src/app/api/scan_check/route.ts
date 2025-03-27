@@ -1,7 +1,7 @@
 import Groq from "groq-sdk";
 import z from "zod";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "" });
 const CheckScanSchema = z.object({
   check_or_not: z
     .boolean()
