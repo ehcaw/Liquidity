@@ -28,13 +28,24 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Database } from "@/types/db";
+import {
+  Select,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+  SelectContent,
+} from "./ui/select";
 
-export default function CheckDeposit() {
+type Account = Database["public"]["Tables"]["accounts"]["Row"];
+
+export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
   const router = useRouter();
   const [checkImage, setCheckImage] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmTerms, setConfirmTerms] = useState(false);
+  const [account, setAccount] = useState("");
 
   const supabase = createClient();
 
@@ -174,6 +185,30 @@ export default function CheckDeposit() {
                   >
                     Replace Image
                   </Button>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="account">Account Number</Label>
+                  <Select
+                    value={account}
+                    onValueChange={(value) => setAccount(value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select account" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {accounts.map((acc) => (
+                        <SelectItem key={acc.id} value={acc.account_number}>
+                          {acc.name +
+                            "  (..." +
+                            acc.account_number.slice(
+                              acc.account_number.length - 4,
+                            ) +
+                            ")"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
