@@ -36,7 +36,7 @@ import {
   SelectValue,
   SelectContent,
 } from "./ui/select";
-import toast from "sonner";
+import { toast } from "sonner";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
 
