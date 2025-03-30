@@ -1,9 +1,11 @@
 import { deposit, transfer, withdraw } from "@/services/banking/account";
 import { createTransaction } from "@/services/banking/transaction";
+import { Database } from "@/types/db";
 import { ClientError, ServerError } from "@/utils/exceptions";
 import { PostTransactionRequestBody } from "@/utils/zod/transaction";
 import { NextRequest } from "next/server";
 
+type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 export async function POST(req: NextRequest) {
   let body;
   try {
@@ -18,7 +20,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    let transaction = {};
+    let transaction: Transaction | null = null;
     switch (body.transaction_type) {
       case "Deposit":
         transaction = await deposit(body.src_account_number, body.amount);
