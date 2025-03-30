@@ -51,7 +51,7 @@ create table accounts (
   name varchar(50) not null,
   account_type account_type_enum not null,
   balance numeric(10, 2) not null default 0.00,
-  status account_status_enum not null default 'Pending',
+  status account_status_enum not null default 'Active',
   user_id int not null,
   primary key(id),
   foreign key(user_id) references users(id) on update cascade
@@ -63,7 +63,7 @@ create table transactions (
   amount numeric(10, 2) not null,
   description text not null,
   balance numeric(10, 2) not null,
-  status transaction_status_enum not null default 'Pending',
+  status transaction_status_enum not null default 'Active',
   transaction_type transaction_type_enum not null,
   account_id int not null,
   primary key(id),

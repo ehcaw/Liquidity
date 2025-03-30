@@ -10,7 +10,7 @@ const useFetch = () => {
 
     const data = await response.json();
     if (!response.ok) {
-      throw data.error;
+      throw new Error(data.error);
     }
     if (response.status === 204) {
       return null;
