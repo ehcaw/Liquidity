@@ -32,20 +32,20 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TransferFormSchema } from "@/utils/zod/form";
+import { DepositFormSchema } from "@/utils/zod/form";
 import { Database } from "@/types/db";
 import useFetch from "@/hooks/useFetch";
 import { useRouter } from "next/navigation";
 
-type FormValues = z.infer<typeof TransferFormSchema>;
+type FormValues = z.infer<typeof DepositFormSchema>;
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
 type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 
-export interface ITransferFormProps {
+export interface IDepositFormProps {
   accounts: Account[];
 }
 
-export default function TransferForm({ accounts }: ITransferFormProps) {
+export default function DepositForm({ accounts }: IDepositFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { fetchData } = useFetch();
   const router = useRouter();
@@ -56,9 +56,8 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
   );
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(TransferFormSchema),
+    resolver: zodResolver(DepositFormSchema),
     defaultValues: {
-      fromAccount: "",
       toAccount: "",
       amount: 0,
     },
@@ -73,10 +72,9 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        src_account_number: values.fromAccount,
-        dest_account_number: values.toAccount,
+        src_account_number: values.toAccount,
         amount: values.amount,
-        transaction_type: "Transfer",
+        transaction_type: "Deposit",
       }),
     })
       .then(() => {
@@ -96,11 +94,9 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ArrowRightLeft className="h-5 w-5" />
-            New Transfer
+            New Deposit
           </CardTitle>
-          <CardDescription>
-            Transfer money between your accounts
-          </CardDescription>
+          <CardDescription>Deposit money into your account</CardDescription>
           {error && <p className="text-red-500">{error}</p>}
         </CardHeader>
         <CardContent>
@@ -109,38 +105,7 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-6"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="fromAccount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>From Account</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select account" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {accounts.map((account) => (
-                            <SelectItem
-                              key={account.id}
-                              value={account.account_number}
-                            >
-                              {account.name} - ${account.balance}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
+              <div className="w-full">
                 <FormField
                   control={form.control}
                   name="toAccount"
@@ -198,7 +163,7 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
                       </div>
                     </FormControl>
                     <FormDescription>
-                      Enter the amount you want to transfer
+                      Enter the amount you want to deposit
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -207,7 +172,7 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
 
               <FormField
                 control={form.control}
-                name="confirmTransfer"
+                name="confirmDeposit"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
@@ -217,9 +182,9 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>Confirm Transfer</FormLabel>
+                      <FormLabel>Confirm Deposit</FormLabel>
                       <FormDescription>
-                        I authorize this transfer and confirm the details are
+                        I authorize this deposit and confirm the details are
                         correct.
                       </FormDescription>
                     </div>
@@ -233,7 +198,7 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
                 className="w-full"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Processing..." : "Transfer"}
+                {isSubmitting ? "Processing..." : "Deposit"}
               </Button>
             </form>
           </Form>
