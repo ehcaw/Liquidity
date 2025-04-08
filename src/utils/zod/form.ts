@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { z } from "zod";
 
@@ -55,10 +55,9 @@ export const TransferFormSchema = z
     toAccount: z.string({
       required_error: "Please select an account to transfer to",
     }),
-    amount: z.string().refine(
+    amount: z.number().refine(
       (val) => {
-        const num = Number.parseFloat(val)
-        return !isNaN(num) && num > 0
+        return !isNaN(val) && val > 0;
       },
       {
         message: "Amount must be greater than 0",
@@ -73,4 +72,42 @@ export const TransferFormSchema = z
   .refine((data) => data.fromAccount !== data.toAccount, {
     message: "From and To accounts must be different",
     path: ["toAccount"],
-  })
+  });
+
+export const DepositFormSchema = z.object({
+  toAccount: z.string({
+    required_error: "Please select an account to deposit to",
+  }),
+  amount: z.number().refine(
+    (val) => {
+      return !isNaN(val) && val > 0;
+    },
+    {
+      message: "Amount must be greater than 0",
+    },
+  ),
+  confirmDeposit: z.literal(true, {
+    errorMap: () => ({
+      message: "You must confirm the transfer details",
+    }),
+  }),
+});
+
+export const WithdrawFormSchema = z.object({
+  fromAccount: z.string({
+    required_error: "Please select an account to withdraw from",
+  }),
+  amount: z.number().refine(
+    (val) => {
+      return !isNaN(val) && val > 0;
+    },
+    {
+      message: "Amount must be greater than 0",
+    },
+  ),
+  confirmWithdrawal: z.literal(true, {
+    errorMap: () => ({
+      message: "You must confirm the transfer details",
+    }),
+  }),
+});
