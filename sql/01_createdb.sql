@@ -273,8 +273,6 @@ $$ LANGUAGE plpgsql;
 
 insert into storage.buckets (id, name, public) values ('checks', 'checks', false);
 
-create policy "Any authenticated user can view checks" on storage.objects for select
-using ( bucket_id = 'checks' and auth.role() = 'authenticated' and (metadata->>'userId')::text = auth.uid()::text);
-
-create policy "Any authenticated user can insert checks" on storage.objects for select
-using (bucket_id = 'checks'and auth.role() = 'authenticated');
+create policy "View own checks" on storage.objects for select to authenticated using ( (select auth.uid() ) = owner_id::uuid);
+create policy "Insert own checks" on storage.objects for insert to authenticated
+with check (bucket_id = 'checks' and (storage.foldername(name))[1] = (select auth.uid()::text));
