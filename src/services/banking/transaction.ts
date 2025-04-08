@@ -135,3 +135,20 @@ export async function createTransaction(
 
   return data[0];
 }
+
+// returns specified number of most recent transactions (default 5)
+export async function getRecentTransactions(limit = 5) {
+  const supabase = await createClient();
+
+  const { data , error } = await supabase
+  .from("transactions")
+  .select("*")
+  .order("created_at", { ascending: false })
+  .limit(limit);
+
+  if (error) {
+    console.error('Transaction fetch error:', error)
+    throw new ServerError(error.message);
+  }
+  return data;
+}
