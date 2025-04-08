@@ -105,6 +105,7 @@ create table ledger (
   foreign key(transaction_id) references transactions(id) on update cascade on delete cascade
 );
 
+
 -- Functions
 create or replace function get_total_balance(uid int)
 returns numeric(10, 2)
@@ -276,3 +277,11 @@ insert into storage.buckets (id, name, public) values ('checks', 'checks', false
 create policy "View own checks" on storage.objects for select to authenticated using ( (select auth.uid() ) = owner_id::uuid);
 create policy "Insert own checks" on storage.objects for insert to authenticated
 with check (bucket_id = 'checks' and (storage.foldername(name))[1] = (select auth.uid()::text));
+
+create table inserted_checks (
+    id TEXT PRIMARY KEY,
+    inserted_at TIMESTAMP DEFAULT NOW(),
+    check_name text not null,
+    amount numeric not null,
+    check_date text not null
+);
