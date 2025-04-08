@@ -21,20 +21,25 @@ export async function POST(req: NextRequest) {
     const now = Date.now();
     const { data: upload, error } = await supabase.storage
       .from("checks")
-      .upload(`check-user_id=${userId}-${now}`, checkImage, {
+      .upload(`${userId}/check-${now}`, checkImage, {
         metadata: { userId: userId, uploadedAt: now },
       });
     if (error) {
+      console.log(error.message);
+
       throw new ServerError("Check upload failed");
     }
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    console.log(upload);
     const { data: url, error: signedUrlError } = await supabase.storage
       .from("checks")
       .createSignedUrl(upload.path, 3600);
     if (signedUrlError) {
+      console.log(signedUrlError);
       throw new ServerError("Error creating an encrypted link for your check");
     }
-
-    return Response.json({ url });
+    console.log("SIGNED URL", url.signedUrl);
+    return Response.json({ uploadLink: url.signedUrl });
   } catch (error) {
     if (error instanceof ClientError) {
       return Response.json(

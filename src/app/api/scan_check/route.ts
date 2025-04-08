@@ -1,4 +1,5 @@
 import Groq from "groq-sdk";
+import { getRawAsset } from "node:sea";
 import z from "zod";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "" });
@@ -13,6 +14,11 @@ const CheckScanSchema = z.object({
   amount: z.number().optional().describe("Numerical amount on the check"),
   date: z.string().optional().describe("Date written on the check"),
 });
+
+function getRawBase64(base64image: string) {
+  return base64image.replace(/^data:image\/\w+;base64,/, "");
+}
+
 export async function POST(req: Request) {
   const { url } = await req.json();
   const prompt = `Analyze this image and determine if it contains a valid check/cheque.
@@ -31,6 +37,10 @@ Return your response in this exact JSON format:
   "amount": number or null if not a check,
   "date": string or null if not a check
 }`;
+  const image = await fetch(url);
+  const res = await image.text();
+  console.log(res);
+  const base64image = getRawBase64(res);
   const response = await groq.chat.completions.create({
     messages: [
       {
@@ -43,13 +53,13 @@ Return your response in this exact JSON format:
           {
             type: "image_url",
             image_url: {
-              url: url,
+              url: `data:image/jpeg;base64,${base64image}`,
             },
           },
         ],
       },
     ],
-    model: "llama-3.2-90b-vision-preview",
+    model: "meta-llama/llama-4-scout-17b-16e-instruct",
     temperature: 0.2,
     max_completion_tokens: 1024,
     top_p: 1,

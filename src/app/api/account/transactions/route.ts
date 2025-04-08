@@ -36,12 +36,16 @@ export async function PUT(req: Request) {
   const { amount, accountNumber } = await req.json();
   try {
     await transferFunds(accountNumber, amount);
+    return Response.json({ data: null }, { status: 200 });
   } catch (error) {
     if (error instanceof ClientError) {
+      console.log(error.message);
       return Response.json({ error: error.message }, { status: error.status });
     } else if (error instanceof ServerError) {
+      console.log(error.message);
       return Response.json({ error: error.message }, { status: error.status });
     }
+    console.log(error);
     return Response.json({ error: error }, { status: 500 });
   }
 }

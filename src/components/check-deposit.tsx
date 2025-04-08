@@ -80,13 +80,15 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       method: "POST",
       body: formData,
     });
-    const { uploadLink } = await response.json();
+    const data = await response.json();
+    console.log(data.uploadLink);
     const checkScanResponse = await fetch("/api/scan_check", {
       method: "POST",
-      body: JSON.stringify({ url: uploadLink }),
+      body: JSON.stringify({ url: data.uploadLink }),
     });
     if (!checkScanResponse.ok) {
       alert("Your check could not be uploaded.");
+      setIsSubmitting(false);
       return;
     }
     const {
@@ -94,22 +96,26 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       name,
       amount: am,
       date,
-    } = await checkScanResponse.json();
+    } = (await checkScanResponse.json()).data;
+    console.log(check_or_not, name, amount, date);
     if (!check_or_not) {
       alert("Please upload a valid check.");
+      setIsSubmitting(false);
       return;
     }
     // update the account balance
     // await fetch('/api/update_balance', method: "POST", body: JSON.stringify(amount: am));
-    const checkDepositResponse = await fetch("/api/transactions", {
+    const checkDepositResponse = await fetch("/api/account/transactions", {
       method: "PUT",
-      body: JSON.stringify({ amount: am, account_number: account }),
+      body: JSON.stringify({ amount: am, accountNumber: account }),
     });
     if (!checkDepositResponse.ok) {
       alert("Your check could not be deposited.");
+      setIsSubmitting(false);
       return;
     }
     toast("Your check has been deposited.");
+    setIsSubmitting(false);
   };
 
   return (
