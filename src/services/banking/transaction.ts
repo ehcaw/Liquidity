@@ -97,6 +97,7 @@ export async function insertCheck(
     console.log(error);
     return false;
   }
+}
 export async function createTransaction(
   account_id: number,
   balance: number,
@@ -108,19 +109,22 @@ export async function createTransaction(
   const supabase = await createClient();
   console.log(account_id, balance, amount, type, description);
 
-  const { data, error } = await supabase.from("transactions").insert({
-    account_id,
-    amount,
-    description,
-    transaction_type: type,
-    balance
-  }).select();
+  const { data, error } = await supabase
+    .from("transactions")
+    .insert({
+      account_id,
+      amount,
+      description,
+      transaction_type: type,
+      balance,
+    })
+    .select();
 
   if (error) {
     throw new ServerError(error.message);
   }
 
-  await createLedgerEntry(data[0])
+  await createLedgerEntry(data[0]);
 
   return data[0];
 }

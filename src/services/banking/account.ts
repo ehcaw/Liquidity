@@ -194,14 +194,24 @@ export async function transferFunds(
     p_amount: amount,
   });
   if (error) throw new ClientError(`Transfer failed: ${error.message}`, 400);
-export async function deposit(account_number: string, amount: number, create_transaction: boolean = true) {
+}
+export async function deposit(
+  account_number: string,
+  amount: number,
+  create_transaction: boolean = true,
+) {
   const supabase = await createClient();
   const authUser = await getAuthUser();
   const account = await getUserAccount(account_number);
 
-  const { data, error } = await supabase.from("accounts").update({
-    balance: account.balance + amount,
-  }).eq("account_number", account_number).eq("user_id", authUser.id).select();
+  const { data, error } = await supabase
+    .from("accounts")
+    .update({
+      balance: account.balance + amount,
+    })
+    .eq("account_number", account_number)
+    .eq("user_id", authUser.id)
+    .select();
 
   if (error) {
     throw new ServerError(error.message);
@@ -210,10 +220,20 @@ export async function deposit(account_number: string, amount: number, create_tra
   if (!create_transaction) {
     return null;
   }
-  return await createTransaction(data[0].id, data[0].balance, amount, "Deposit", `Deposited $${amount} into ${account.name}`);
+  return await createTransaction(
+    data[0].id,
+    data[0].balance,
+    amount,
+    "Deposit",
+    `Deposited $${amount} into ${account.name}`,
+  );
 }
 
-export async function withdraw(account_number: string, amount: number, create_transaction: boolean = true) {
+export async function withdraw(
+  account_number: string,
+  amount: number,
+  create_transaction: boolean = true,
+) {
   const supabase = await createClient();
   const authUser = await getAuthUser();
   const account = await getUserAccount(account_number);
@@ -222,9 +242,14 @@ export async function withdraw(account_number: string, amount: number, create_tr
     throw new ClientError("Insufficient funds", 400);
   }
 
-  const { data, error } = await supabase.from("accounts").update({
-    balance: account.balance - amount,
-  }).eq("account_number", account_number).eq("user_id", authUser.id).select();
+  const { data, error } = await supabase
+    .from("accounts")
+    .update({
+      balance: account.balance - amount,
+    })
+    .eq("account_number", account_number)
+    .eq("user_id", authUser.id)
+    .select();
 
   if (error) {
     throw new ServerError(error.message);
@@ -233,20 +258,37 @@ export async function withdraw(account_number: string, amount: number, create_tr
   if (!create_transaction) {
     return null;
   }
-  return await createTransaction(data[0].id, data[0].balance, amount*-1, "Withdrawal", `Withdrew $${amount} from ${account.name}`);
+  return await createTransaction(
+    data[0].id,
+    data[0].balance,
+    amount * -1,
+    "Withdrawal",
+    `Withdrew $${amount} from ${account.name}`,
+  );
 }
 
-export async function transfer(src_account_number: string, dest_account_number: string, amount: number, create_transaction: boolean = true) {
+export async function transfer(
+  src_account_number: string,
+  dest_account_number: string,
+  amount: number,
+  create_transaction: boolean = true,
+) {
   await getAuthUser();
   const src_account = await getUserAccount(src_account_number);
   const dest_account = await getUserAccount(dest_account_number);
 
   await withdraw(src_account_number, amount, false);
   await deposit(dest_account_number, amount);
-  
+
   if (!create_transaction) {
     return null;
   }
-  console.log(src_account.balance, amount*-1);
-  return await createTransaction(src_account.id, src_account.balance-amount, amount*-1, "Transfer", `Transferred $${amount} from ${src_account.name} to ${dest_account.name}`);
+  console.log(src_account.balance, amount * -1);
+  return await createTransaction(
+    src_account.id,
+    src_account.balance - amount,
+    amount * -1,
+    "Transfer",
+    `Transferred $${amount} from ${src_account.name} to ${dest_account.name}`,
+  );
 }
