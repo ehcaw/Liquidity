@@ -222,3 +222,64 @@ $$
 language plpgsql
 stable
 ;
+
+create or replace function admin_get_total_bank_balance()
+returns decimal(15,2)
+as $$
+declare
+  v_total decimal(15,2);
+begin
+  select sum(balance) into v_total
+  from accounts
+  where status = 'Active';
+
+  return coalesce(v_total, 0.00);
+end;
+$$
+language plpgsql
+stable
+;
+
+create or replace function admin_count_pending_transactions()
+returns integer
+as $$
+begin
+  return (select count(*) from transactions where status = 'Pending');
+end;
+$$
+language plpgsql
+stable
+;
+
+create or replace function admin_count_active_accounts()
+returns integer
+as $$
+begin
+  return (select count(*) from accounts where status = 'Active');
+end;
+$$
+language plpgsql
+stable
+;
+
+create or replace function admin_count_new_accounts()
+returns integer
+as $$
+begin
+  return (select count(*) from accounts where created_at >= (current_date - interval '30 days'));
+end;
+$$
+language plpgsql
+stable
+;
+
+create or replace function admin_count_total_transactions()
+returns integer
+as $$
+begin
+  return (select count(*) from transactions);
+end
+$$
+language plpgsql
+stable
+;
