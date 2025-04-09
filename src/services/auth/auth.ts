@@ -22,3 +22,15 @@ export async function getAuthUser() {
 
   return user[0];
 }
+
+export async function userExists(email: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.from("users").select().eq("email", email);
+
+  if (error) {
+    throw new ClientError(error.message, 404);
+  }
+
+  return data.length > 0;
+}

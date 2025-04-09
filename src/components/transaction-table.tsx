@@ -150,7 +150,10 @@ export default function TransactionsTable({
               </SelectContent>
             </Select>
             <Link href="/transfers">
-              <Button>Transfer Money</Button>
+              <Button>Move Money</Button>
+            </Link>
+            <Link href="/dashboard/check-deposit">
+              <Button>Deposit Check</Button>
             </Link>
           </div>
         </div>
@@ -187,10 +190,9 @@ export default function TransactionsTable({
                       </Badge>
                     </TableCell>
                     <TableCell
-                      className={`text-right ${getAmountColor(transaction)}`}
+                      className={`text-right ${getAmountColor(transaction.amount)}`}
                     >
-                      {getAmountPrefix(transaction)}
-                      {formatCurrency(Math.abs(transaction.amount))}
+                      {formatCurrency(transaction.amount)}
                     </TableCell>
                     <TableCell className="text-right">
                       {formatCurrency(transaction.balance)}
@@ -221,20 +223,6 @@ function getStatusVariant(
   }
 }
 
-function getAmountColor(transaction: Transaction): string {
-  const isDeposit =
-    transaction.transaction_type === "Deposit" ||
-    transaction.transaction_type === "Transfer" ||
-    transaction.amount > 0;
-
-  return isDeposit ? "text-green-600" : "text-red-600";
-}
-
-function getAmountPrefix(transaction: Transaction): string {
-  const isDeposit =
-    transaction.transaction_type === "Deposit" ||
-    transaction.transaction_type === "Transfer" ||
-    transaction.amount > 0;
-
-  return isDeposit ? "+" : "-";
+function getAmountColor(amount: number): string {
+  return amount > 0 ? "text-green-600" : "text-red-600";
 }

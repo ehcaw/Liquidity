@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { z } from "zod";
 
@@ -45,4 +45,69 @@ export const ProfileFormSchema = z.object({
 export const CreateAccountFormSchema = z.object({
   account_name: z.string().min(1, "Account name is required"),
   account_type: z.enum(["Checking", "Savings"]),
+});
+
+export const TransferFormSchema = z
+  .object({
+    fromAccount: z.string({
+      required_error: "Please select an account to transfer from",
+    }),
+    toAccount: z.string({
+      required_error: "Please select an account to transfer to",
+    }),
+    amount: z.number().refine(
+      (val) => {
+        return !isNaN(val) && val > 0;
+      },
+      {
+        message: "Amount must be greater than 0",
+      },
+    ),
+    confirmTransfer: z.literal(true, {
+      errorMap: () => ({
+        message: "You must confirm the transfer details",
+      }),
+    }),
+  })
+  .refine((data) => data.fromAccount !== data.toAccount, {
+    message: "From and To accounts must be different",
+    path: ["toAccount"],
+  });
+
+export const DepositFormSchema = z.object({
+  toAccount: z.string({
+    required_error: "Please select an account to deposit to",
+  }),
+  amount: z.number().refine(
+    (val) => {
+      return !isNaN(val) && val > 0;
+    },
+    {
+      message: "Amount must be greater than 0",
+    },
+  ),
+  confirmDeposit: z.literal(true, {
+    errorMap: () => ({
+      message: "You must confirm the transfer details",
+    }),
+  }),
+});
+
+export const WithdrawFormSchema = z.object({
+  fromAccount: z.string({
+    required_error: "Please select an account to withdraw from",
+  }),
+  amount: z.number().refine(
+    (val) => {
+      return !isNaN(val) && val > 0;
+    },
+    {
+      message: "Amount must be greater than 0",
+    },
+  ),
+  confirmWithdrawal: z.literal(true, {
+    errorMap: () => ({
+      message: "You must confirm the transfer details",
+    }),
+  }),
 });

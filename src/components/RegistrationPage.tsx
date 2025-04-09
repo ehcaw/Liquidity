@@ -40,6 +40,7 @@ type User = Database["public"]["Tables"]["users"]["Row"];
 export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [states, setStates] = useState<State["code"][]>([]);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { fetchData } = useFetch();
 
@@ -87,7 +88,7 @@ export default function Register() {
         router.replace("/dashboard");
       })
       .catch((error) => {
-        console.error(error);
+        setError(error.message);
       })
       .finally(() => {
         setIsLoading(false);
@@ -101,6 +102,7 @@ export default function Register() {
         <CardDescription>
           Fill in your details to register for a new account.
         </CardDescription>
+        {error && <p className="text-red-500">{error}</p>}
       </CardHeader>
       <CardContent>
         <Form {...form}>

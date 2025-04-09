@@ -1,8 +1,11 @@
 import ClientMap from "@/components/client-map";
+import { isAuthenticated } from "@/utils/isAuthenticated";
 
-export default function MapPage() {
+export default async function MapPage() {
   // You would replace this with your actual environment variable or config
   const mapboxAccessToken = process.env.MAPBOX_API_KEY || "";
+
+  await isAuthenticated();
 
   return (
     <div className="flex flex-col gap-6 p-6">
