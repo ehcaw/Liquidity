@@ -285,3 +285,25 @@ create table inserted_checks (
     amount numeric not null,
     check_date text not null
 );
+
+CREATE OR REPLACE FUNCTION deposit_funds(
+  p_account_number CHAR(12),
+  p_amount NUMERIC(10,2)
+) RETURNS void AS $$
+BEGIN
+  IF p_amount <= 0 THEN
+      RAISE EXCEPTION 'Deposit amount must be positive.';
+  END IF;
+
+  UPDATE accounts
+  SET balance = balance + p_amount
+  WHERE account_number = p_account_number;
+
+  IF NOT FOUND THEN
+      RAISE EXCEPTION 'Account % not found.', p_account_number;
+  END IF;
+
+  -- maybe add into transactions heres
+
+END;
+$$ LANGUAGE plpgsql;
