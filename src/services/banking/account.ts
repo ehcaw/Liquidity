@@ -188,7 +188,7 @@ export async function transferFunds(
 ) {
   const supabase = await createClient();
   const { error } = await supabase.rpc("transfer_funds", {
-    p_from_account: from_account_number || null,
+    p_from_account: from_account_number || "",
     p_to_account: to_account_number,
     p_amount: amount,
   });

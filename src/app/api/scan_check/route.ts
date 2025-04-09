@@ -1,5 +1,6 @@
+import { checkCheckExistence } from "@/services/banking/transaction";
+import { ServerError } from "@/utils/exceptions";
 import Groq from "groq-sdk";
-import { getRawAsset } from "node:sea";
 import z from "zod";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "" });
@@ -13,6 +14,7 @@ const CheckScanSchema = z.object({
     .describe("Name of the person/entity on the check"),
   amount: z.number().optional().describe("Numerical amount on the check"),
   date: z.string().optional().describe("Date written on the check"),
+  check_id: z.string().optional().describe("Check ID on the check"),
 });
 
 function getRawBase64(base64image: string) {
@@ -27,6 +29,7 @@ If it is a check, extract the following information:
 1. The name on the check (payee)
 2. The amount (numeric value only, e.g., 123.45)
 3. The date (formatted as string)
+4. The bank routing number + account number + check number (if available)
 
 If it is NOT a check or the image quality is too poor to determine, just indicate that.
 
@@ -36,10 +39,10 @@ Return your response in this exact JSON format:
   "name": string or null if not a check,
   "amount": number or null if not a check,
   "date": string or null if not a check
+  "check_id": string or null if not a check
 }`;
   const image = await fetch(url);
   const res = await image.text();
-  console.log(res);
   const base64image = getRawBase64(res);
   const response = await groq.chat.completions.create({
     messages: [
@@ -78,6 +81,14 @@ Return your response in this exact JSON format:
 
     // Validate with Zod schema
     const validated = CheckScanSchema.parse(jsonResponse);
+    const checkId =
+      validated.check_id ||
+      `name:${validated.name}/amount:${validated.amount}/date${validated.date}`;
+    console.log(validated);
+    const isValid = await checkCheckExistence(checkId);
+    if (isValid) {
+      throw new ServerError("Check already exists", 500);
+    }
 
     console.log("Validated check data:", validated);
     return Response.json({ data: validated }, { status: 200 });

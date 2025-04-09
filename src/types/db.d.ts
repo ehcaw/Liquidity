@@ -311,6 +311,13 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      deposit_funds: {
+        Args: {
+          p_account_number: string;
+          p_amount: number;
+        };
+        Returns: undefined;
+      };
       get_account_balance_change: {
         Args: {
           an: string;

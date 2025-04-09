@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -37,6 +36,11 @@ import {
   SelectContent,
 } from "./ui/select";
 import { toast } from "sonner";
+import {
+  checkCheckExistence,
+  insertCheck,
+} from "@/services/banking/transaction";
+import { processCheckDepositAction } from "@/app/actions/banking";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
 
@@ -96,26 +100,30 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       name,
       amount: am,
       date,
+      check_id,
     } = (await checkScanResponse.json()).data;
-    console.log(check_or_not, name, amount, date);
     if (!check_or_not) {
       alert("Please upload a valid check.");
       setIsSubmitting(false);
       return;
     }
-    // update the account balance
-    // await fetch('/api/update_balance', method: "POST", body: JSON.stringify(amount: am));
-    const checkDepositResponse = await fetch("/api/account/transactions", {
-      method: "PUT",
-      body: JSON.stringify({ amount: am, accountNumber: account }),
-    });
-    if (!checkDepositResponse.ok) {
-      alert("Your check could not be deposited.");
+    const validTransaction = await processCheckDepositAction(
+      check_id,
+      name,
+      Number(amount),
+      date,
+      account,
+    );
+    if (!validTransaction.success) {
+      toast(`Your check could not be deposited. ${validTransaction.error}`);
       setIsSubmitting(false);
       return;
     }
-    toast("Your check has been deposited.");
-    setIsSubmitting(false);
+    if (validTransaction) {
+      toast("Your check was successfully deposited.");
+      setIsSubmitting(false);
+      return;
+    }
   };
 
   return (
