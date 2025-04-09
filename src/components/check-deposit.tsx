@@ -36,10 +36,6 @@ import {
   SelectContent,
 } from "./ui/select";
 import { toast } from "sonner";
-import {
-  checkCheckExistence,
-  insertCheck,
-} from "@/services/banking/transaction";
 import { processCheckDepositAction } from "@/app/actions/banking";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
@@ -91,7 +87,7 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       body: JSON.stringify({ url: data.uploadLink }),
     });
     if (!checkScanResponse.ok) {
-      alert("Your check could not be uploaded.");
+      toast("Your check could not be uploaded.");
       setIsSubmitting(false);
       return;
     }
@@ -103,7 +99,7 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       check_id,
     } = (await checkScanResponse.json()).data;
     if (!check_or_not) {
-      alert("Please upload a valid check.");
+      toast("Please upload a valid check.");
       setIsSubmitting(false);
       return;
     }
@@ -127,8 +123,8 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
   };
 
   return (
-    <div className="container max-w-2xl py-10">
-      <Card className="mx-auto">
+    <div className="w-full flex justify-center">
+      <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <CardTitle className="text-2xl">Deposit Check</CardTitle>
           <CardDescription>

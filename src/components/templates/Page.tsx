@@ -8,9 +8,11 @@ interface IPageProps {
 
 const Page: React.FC<IPageProps> = ({ children }) => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="max-w-7xl mx-auto py-10 space-y-10">{children}</div>
+      <main className="flex flex-grow items-center justify-center w-full">
+        <div className="py-10 space-y-10 w-full max-w-7xl"> {children}</div>
+      </main>
       <Footer />
     </div>
   );
