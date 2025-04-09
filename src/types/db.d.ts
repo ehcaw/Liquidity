@@ -75,6 +75,30 @@ export type Database = {
           },
         ];
       };
+      inserted_checks: {
+        Row: {
+          amount: number;
+          check_date: string;
+          check_name: string;
+          id: string;
+          inserted_at: string | null;
+        };
+        Insert: {
+          amount: number;
+          check_date: string;
+          check_name: string;
+          id: string;
+          inserted_at?: string | null;
+        };
+        Update: {
+          amount?: number;
+          check_date?: string;
+          check_name?: string;
+          id?: string;
+          inserted_at?: string | null;
+        };
+        Relationships: [];
+      };
       ledger: {
         Row: {
           account_id: number;
@@ -343,11 +367,11 @@ export type Database = {
       };
       transfer_funds: {
         Args: {
-          p_from_account: string | null;
+          p_from_account: string;
           p_to_account: string;
           p_amount: number;
         };
-        Returns: void | null;
+        Returns: undefined;
       };
     };
     Enums: {
