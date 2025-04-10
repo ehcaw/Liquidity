@@ -105,6 +105,7 @@ create table ledger (
   foreign key(transaction_id) references transactions(id) on update cascade on delete cascade
 );
 
+
 -- Functions
 create or replace function get_total_balance(uid int)
 returns numeric(10, 2)
@@ -112,7 +113,7 @@ as $$
 declare total_balance numeric(10, 2);
 begin
   select coalesce(sum(balance)::numeric(10, 2), 0.00) into total_balance
-  from accounts 
+  from accounts
   group by user_id
   having user_id=uid;
 
@@ -222,6 +223,90 @@ $$
 language plpgsql
 stable
 ;
+
+CREATE OR REPLACE FUNCTION transfer_funds(
+  p_from_account CHAR(12),
+  p_to_account CHAR(12),
+  p_amount NUMERIC(10,2)
+) RETURNS void AS $$
+DECLARE
+  v_from_balance NUMERIC(10,2);
+  v_to_balance NUMERIC(10,2);
+BEGIN
+  BEGIN
+    IF p_from_account IS NOT NULL THEN
+      SELECT balance INTO v_from_balance
+      FROM accounts
+      WHERE account_number = p_from_account
+      FOR UPDATE;
+
+      IF NOT FOUND THEN
+        RAISE EXCEPTION 'From account % not found', p_from_account;
+      END IF;
+
+      IF v_from_balance < p_amount THEN
+        RAISE EXCEPTION 'Insufficient funds in account %', p_from_account;
+      END IF;
+
+      UPDATE accounts
+      SET balance = balance - p_amount
+      WHERE account_number = p_from_account;
+    END IF;
+
+    SELECT balance INTO v_to_balance
+    FROM accounts
+    WHERE account_number = p_to_account
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'To account % not found', p_to_account;
+    END IF;
+
+    UPDATE accounts
+    SET balance = balance + p_amount
+    WHERE account_number = p_to_account;
+
+  EXCEPTION WHEN OTHERS THEN
+    RAISE;
+  END;
+END;
+$$ LANGUAGE plpgsql;
+
+insert into storage.buckets (id, name, public) values ('checks', 'checks', false);
+
+create policy "View own checks" on storage.objects for select to authenticated using ( (select auth.uid() ) = owner_id::uuid);
+create policy "Insert own checks" on storage.objects for insert to authenticated
+with check (bucket_id = 'checks' and (storage.foldername(name))[1] = (select auth.uid()::text));
+
+create table inserted_checks (
+    id TEXT PRIMARY KEY,
+    inserted_at TIMESTAMP DEFAULT NOW(),
+    check_name text not null,
+    amount numeric not null,
+    check_date text not null
+);
+
+CREATE OR REPLACE FUNCTION deposit_funds(
+  p_account_number CHAR(12),
+  p_amount NUMERIC(10,2)
+) RETURNS void AS $$
+BEGIN
+  IF p_amount <= 0 THEN
+      RAISE EXCEPTION 'Deposit amount must be positive.';
+  END IF;
+
+  UPDATE accounts
+  SET balance = balance + p_amount
+  WHERE account_number = p_account_number;
+
+  IF NOT FOUND THEN
+      RAISE EXCEPTION 'Account % not found.', p_account_number;
+  END IF;
+
+  -- maybe add into transactions heres
+
+END;
+$$ LANGUAGE plpgsql;
 
 create or replace function admin_get_total_bank_balance()
 returns decimal(15,2)

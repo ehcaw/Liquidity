@@ -25,6 +25,7 @@ import { SignInFormSchema } from "@/utils/zod/form";
 import useFetch from "@/hooks/useFetch";
 import { useRouter } from "next/navigation";
 import { Database } from "@/types/db";
+import { toast } from "sonner";
 
 type User = Database["public"]["Tables"]["users"]["Row"];
 export default function SignInForm() {
@@ -53,7 +54,7 @@ export default function SignInForm() {
         router.replace("/dashboard");
       })
       .catch((error) => {
-        console.error(error);
+        toast("Incorrect email or password");
       })
       .finally(() => {
         setIsLoading(false);

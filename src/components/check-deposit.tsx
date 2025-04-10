@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -28,13 +27,26 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Database } from "@/types/db";
+import {
+  Select,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+  SelectContent,
+} from "./ui/select";
+import { toast } from "sonner";
+import { processCheckDepositAction } from "@/app/actions/banking";
 
-export default function CheckDeposit() {
+type Account = Database["public"]["Tables"]["accounts"]["Row"];
+
+export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
   const router = useRouter();
   const [checkImage, setCheckImage] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmTerms, setConfirmTerms] = useState(false);
+  const [account, setAccount] = useState("");
 
   const supabase = createClient();
 
@@ -59,16 +71,7 @@ export default function CheckDeposit() {
     if (!checkImage || !amount || !confirmTerms) {
       return;
     }
-
     setIsSubmitting(true);
-
-    // Simulate API call - replace with your actual backend implementation
-    // setTimeout(() => {
-    //   setIsSubmitting(false);
-    //   // Navigate to success page or show success message
-    //   router.push("/deposit-success");
-    // }, 2000);
-    //
     const userId = (await supabase.auth.getUser()).data.user?.id;
     const formData = new FormData();
     formData.append("file", checkImage);
@@ -77,16 +80,51 @@ export default function CheckDeposit() {
       method: "POST",
       body: formData,
     });
-    const { uploadLink } = await response.json();
+    const data = await response.json();
+    console.log(data.uploadLink);
     const checkScanResponse = await fetch("/api/scan_check", {
       method: "POST",
-      body: JSON.stringify({ url: uploadLink }),
+      body: JSON.stringify({ url: data.uploadLink }),
     });
+    if (!checkScanResponse.ok) {
+      toast("Your check could not be uploaded.");
+      setIsSubmitting(false);
+      return;
+    }
+    const {
+      check_or_not,
+      name,
+      amount: am,
+      date,
+      check_id,
+    } = (await checkScanResponse.json()).data;
+    if (!check_or_not) {
+      toast("Please upload a valid check.");
+      setIsSubmitting(false);
+      return;
+    }
+    const validTransaction = await processCheckDepositAction(
+      check_id,
+      name,
+      Number(amount),
+      date,
+      account,
+    );
+    if (!validTransaction.success) {
+      toast(`Your check could not be deposited. ${validTransaction.error}`);
+      setIsSubmitting(false);
+      return;
+    }
+    if (validTransaction) {
+      toast("Your check was successfully deposited.");
+      setIsSubmitting(false);
+      return;
+    }
   };
 
   return (
-    <div className="container max-w-2xl py-10">
-      <Card className="mx-auto">
+    <div className="w-full flex justify-center">
+      <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <CardTitle className="text-2xl">Deposit Check</CardTitle>
           <CardDescription>
@@ -167,6 +205,30 @@ export default function CheckDeposit() {
                   >
                     Replace Image
                   </Button>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="account">Account Number</Label>
+                  <Select
+                    value={account}
+                    onValueChange={(value) => setAccount(value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select account" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {accounts.map((acc) => (
+                        <SelectItem key={acc.id} value={acc.account_number}>
+                          {acc.name +
+                            "  (..." +
+                            acc.account_number.slice(
+                              acc.account_number.length - 4,
+                            ) +
+                            ")"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
