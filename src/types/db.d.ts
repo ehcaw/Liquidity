@@ -311,6 +311,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_count_active_accounts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      admin_count_new_accounts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      admin_count_pending_transactions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      admin_count_total_transactions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      admin_get_total_bank_balance: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       deposit_funds: {
         Args: {
           p_account_number: string
@@ -406,12 +426,16 @@ export type Database = {
         | "Once"
       schedule_status_enum: "Active" | "Paused"
       transaction_status_enum: "Complete" | "Pending" | "Failed"
+<<<<<<< HEAD
       transaction_type_enum:
         | "Withdrawal"
         | "Deposit"
         | "Transfer"
         | "Payment"
         | "Check Deposit"
+=======
+      transaction_type_enum: "Withdrawal" | "Deposit" | "Transfer" | "Payment"
+>>>>>>> 626c5ff (added database function types)
       user_role_enum: "User" | "Admin"
       user_status_enum: "Active" | "Suspended" | "Deleted" | "Locked"
     }
