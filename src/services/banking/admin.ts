@@ -1,7 +1,5 @@
-import { ClientError, ServerError } from "@/utils/exceptions";
+import { ServerError } from "@/utils/exceptions";
 import { createClient } from "@/utils/supabase/server";
-import { getAuthUser } from "@/services/auth/auth";
-import { Database } from "@/types/db";
 
   // TODO: verify the user is an admin
 

@@ -75,6 +75,30 @@ export type Database = {
           },
         ]
       }
+      inserted_checks: {
+        Row: {
+          amount: number
+          check_date: string
+          check_name: string
+          id: string
+          inserted_at: string | null
+        }
+        Insert: {
+          amount: number
+          check_date: string
+          check_name: string
+          id: string
+          inserted_at?: string | null
+        }
+        Update: {
+          amount?: number
+          check_date?: string
+          check_name?: string
+          id?: string
+          inserted_at?: string | null
+        }
+        Relationships: []
+      }
       ledger: {
         Row: {
           account_id: number
@@ -307,6 +331,13 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      deposit_funds: {
+        Args: {
+          p_account_number: string
+          p_amount: number
+        }
+        Returns: undefined
+      }
       get_account_balance_change: {
         Args: {
           an: string
@@ -360,6 +391,14 @@ export type Database = {
           status: Database["public"]["Enums"]["transaction_status_enum"]
           transaction_type: Database["public"]["Enums"]["transaction_type_enum"]
         }[]
+      }
+      transfer_funds: {
+        Args: {
+          p_from_account: string
+          p_to_account: string
+          p_amount: number
+        }
+        Returns: undefined
       }
     }
     Enums: {
