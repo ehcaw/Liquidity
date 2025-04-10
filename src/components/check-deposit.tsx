@@ -105,6 +105,8 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
     }
     if (am != amount) {
       toast("Amount mismatch. Please check the amount.");
+      setIsSubmitting(false);
+      return;
     }
     const validTransaction = await processCheckDepositAction(
       check_id,
