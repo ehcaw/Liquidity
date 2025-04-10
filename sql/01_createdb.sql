@@ -63,7 +63,7 @@ create table transactions (
   amount numeric(10, 2) not null,
   description text not null,
   balance numeric(10, 2) not null,
-  status transaction_status_enum not null default 'Active',
+  status transaction_status_enum not null default 'Pending',
   transaction_type transaction_type_enum not null,
   account_id int not null,
   primary key(id),

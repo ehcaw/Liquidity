@@ -81,7 +81,6 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       body: formData,
     });
     const data = await response.json();
-    console.log(data.uploadLink);
     const checkScanResponse = await fetch("/api/scan_check", {
       method: "POST",
       body: JSON.stringify({ url: data.uploadLink }),
@@ -103,10 +102,16 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       setIsSubmitting(false);
       return;
     }
+    if (am != amount) {
+      toast("Amount mismatch. Please check the amount.");
+      setIsSubmitting(false);
+      return;
+    }
     const validTransaction = await processCheckDepositAction(
       check_id,
       name,
       Number(amount),
+      am, // use the amount from the scan, not user input
       date,
       account,
     );
