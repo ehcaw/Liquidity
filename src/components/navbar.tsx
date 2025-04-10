@@ -66,7 +66,7 @@ export default function Navbar() {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href="/dashboard/check-deposit" className="w-full">
-                    Check Deposit
+                    Deposit Check
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
