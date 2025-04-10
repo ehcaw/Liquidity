@@ -11,9 +11,17 @@ import { revalidatePath } from "next/cache"; // To refresh data if needed
 // Action to check if a check exists
 export async function checkCheckExistenceAction(
   check_id: string,
+  name: string,
+  scannedAmount: number,
+  date: string,
 ): Promise<boolean> {
   try {
-    return await checkCheckExistenceService(check_id);
+    return await checkCheckExistenceService(
+      check_id,
+      name,
+      scannedAmount,
+      date,
+    );
   } catch (error) {
     console.error("Server Action Error (checkCheckExistenceAction):", error);
     // Handle or re-throw the error appropriately for the client
@@ -71,7 +79,12 @@ export async function processCheckDepositAction(
       `Processing deposit for check ID: ${check_id}, Account: ${accountNumber}, Amount: ${scannedAmount}`,
     );
 
-    const checkExists = await checkCheckExistenceService(check_id);
+    const checkExists = await checkCheckExistenceService(
+      check_id,
+      name,
+      scannedAmount,
+      date,
+    );
     if (checkExists) {
       console.warn(
         `Deposit attempt for already existing check ID: ${check_id}`,

@@ -28,21 +28,31 @@ export async function getAllTransactions() {
   return data;
 }
 
-export async function checkCheckExistence(check_id: string) {
+export async function checkCheckExistence(
+  check_id: string,
+  name: string,
+  amount: number,
+  date: string,
+) {
   // const supabase = createClient(
   //   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
   //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
   // );
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { data: idBased, error } = await supabase
     .schema("public")
     .from("inserted_checks")
     .select("*")
     .eq("id", check_id)
     .single();
 
-  console.log("CHECK CHECK checkCheckExistence ", data);
-  if (data == null) {
+  const { data: informationBased } = await supabase
+    .from("inserted_checks")
+    .select()
+    .eq("check_name", name)
+    .eq("amount", amount)
+    .eq("check_date", date);
+  if (idBased == null && informationBased == null) {
     return false;
   }
   return true;
