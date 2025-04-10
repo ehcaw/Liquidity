@@ -1,11 +1,9 @@
 "use server";
-import { transferFunds } from "@/services/banking/account";
 import {
   checkCheckExistence as checkCheckExistenceService,
   depositFundsService,
   insertCheck as insertCheckService,
 } from "@/services/banking/transaction"; // Import the original service functions
-import { ServerError } from "@/utils/exceptions"; // Assuming ServerError is defined here
 import { revalidatePath } from "next/cache"; // To refresh data if needed
 
 // Action to check if a check exists

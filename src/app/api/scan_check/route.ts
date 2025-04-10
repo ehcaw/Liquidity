@@ -85,16 +85,6 @@ Return your response in this exact JSON format:
       validated.check_id ||
       `name:${validated.name}/amount:${validated.amount}/date${validated.date}`;
     console.log(validated);
-    const isValid = await checkCheckExistence(
-      checkId,
-      validated.name || "",
-      validated.amount || 0,
-      validated.date || "",
-    );
-    if (isValid) {
-      throw new ServerError("Check already exists", 500);
-    }
-
     console.log("Validated check data:", validated);
     return Response.json({ data: validated }, { status: 200 });
   } catch (error) {
