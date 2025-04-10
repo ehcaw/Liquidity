@@ -68,6 +68,7 @@ export async function depositCheckFundsAction(
 export async function processCheckDepositAction(
   check_id: string,
   name: string,
+  userEnteredAmount: number,
   scannedAmount: number,
   date: string,
   accountNumber: string,
@@ -92,14 +93,18 @@ export async function processCheckDepositAction(
         error: "This check has already been deposited.",
       };
     }
-    console.log(`Check ID ${check_id} does not exist. Proceeding...`);
+    if (scannedAmount != userEnteredAmount) {
+      console.warn(
+        `Deposit amount mismatch for check ID: ${check_id}, Expected: ${userEnteredAmount}, Scanned: ${scannedAmount}`,
+      );
+      return {
+        success: false,
+        error: "The amount you entered does not match the amount on the check.",
+      };
+    }
 
     await insertCheckService(name, scannedAmount, date, check_id);
-    console.log(`Inserted check record for ID: ${check_id}`);
     await depositCheckFundsAction(scannedAmount, accountNumber);
-    console.log(
-      `Successfully deposited ${scannedAmount} into account ${accountNumber}`,
-    );
 
     // --- Step 4: Revalidate relevant data paths ---
     // Adjust paths based on where your data is displayed

@@ -81,7 +81,6 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       body: formData,
     });
     const data = await response.json();
-    console.log(data.uploadLink);
     const checkScanResponse = await fetch("/api/scan_check", {
       method: "POST",
       body: JSON.stringify({ url: data.uploadLink }),
@@ -112,6 +111,7 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       check_id,
       name,
       Number(amount),
+      am, // use the amount from the scan, not user input
       date,
       account,
     );
