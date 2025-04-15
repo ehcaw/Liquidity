@@ -406,7 +406,12 @@ export type Database = {
         | "Once"
       schedule_status_enum: "Active" | "Paused"
       transaction_status_enum: "Complete" | "Pending" | "Failed"
-      transaction_type_enum: "Withdrawal" | "Deposit" | "Transfer" | "Payment"
+      transaction_type_enum:
+        | "Withdrawal"
+        | "Deposit"
+        | "Transfer"
+        | "Payment"
+        | "Check Deposit"
       user_role_enum: "User" | "Admin"
       user_status_enum: "Active" | "Suspended" | "Deleted" | "Locked"
     }

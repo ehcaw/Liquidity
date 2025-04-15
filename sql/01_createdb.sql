@@ -3,7 +3,7 @@ create type user_status_enum as enum('Active', 'Suspended', 'Deleted', 'Locked')
 create type account_type_enum as enum('Savings', 'Checking');
 create type account_status_enum as enum('Active', 'Frozen', 'Closed', 'Pending', 'Overdrawn');
 create type transaction_status_enum as enum('Complete', 'Pending', 'Failed');
-create type transaction_type_enum as enum('Withdrawal', 'Deposit', 'Transfer', 'Payment');
+create type transaction_type_enum as enum('Withdrawal', 'Deposit', 'Transfer', 'Payment', 'Check Deposit');
 create type schedule_frequency_enum as enum('Daily', 'Weekly', 'Monthly', 'Annually', 'Once');
 create type schedule_status_enum as enum('Active', 'Paused');
 create type day_enum as enum('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');

@@ -1,10 +1,16 @@
 "use server";
 import {
   checkCheckExistence as checkCheckExistenceService,
+  createTransaction,
   depositFundsService,
   insertCheck as insertCheckService,
 } from "@/services/banking/transaction"; // Import the original service functions
 import { revalidatePath } from "next/cache"; // To refresh data if needed
+import { fetchData } from "@/utils/fetch";
+import { Database } from "@/types/db";
+import { getUserAccount } from "@/services/banking/account";
+
+type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 
 // Action to check if a check exists
 export async function checkCheckExistenceAction(
@@ -105,6 +111,15 @@ export async function processCheckDepositAction(
 
     await insertCheckService(name, scannedAmount, date, check_id);
     await depositCheckFundsAction(scannedAmount, accountNumber);
+    const account = await getUserAccount(accountNumber);
+
+    await createTransaction(
+      Number(accountNumber),
+      account.balance + scannedAmount,
+      scannedAmount,
+      "Check Deposit",
+      `Deposited $${scannedAmount} into Account ${accountNumber}`,
+    );
 
     // --- Step 4: Revalidate relevant data paths ---
     // Adjust paths based on where your data is displayed
