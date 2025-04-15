@@ -1,11 +1,17 @@
-import { createAccount, getUserAccounts } from "@/services/banking/account";
+import { createAccount, getUserActiveAccounts, getUserAllAccounts } from "@/services/banking/account";
 import { ClientError, ServerError } from "@/utils/exceptions";
 import { PostAccountRequestBody } from "@/utils/zod/account";
 import { NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const status = req.nextUrl.searchParams.get("status")
   try {
-    const accounts = await getUserAccounts();
+    let accounts;
+    if (status === "active") {
+      accounts = await getUserActiveAccounts();
+    } else {
+      accounts = await getUserAllAccounts();
+    }
 
     return Response.json({ data: accounts });
   } catch (error) {
