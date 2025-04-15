@@ -55,7 +55,7 @@ export default function Navbar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href="/" className="w-full">
+                  <Link href="/dashboard" className="w-full">
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
