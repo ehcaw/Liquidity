@@ -37,8 +37,10 @@ import {
 } from "./ui/select";
 import { toast } from "sonner";
 import { processCheckDepositAction } from "@/app/actions/banking";
+import { fetchData } from "@/utils/fetch";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
+type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 
 export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
   const router = useRouter();
@@ -81,7 +83,6 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       body: formData,
     });
     const data = await response.json();
-    console.log(data.uploadLink);
     const checkScanResponse = await fetch("/api/scan_check", {
       method: "POST",
       body: JSON.stringify({ url: data.uploadLink }),
@@ -103,10 +104,16 @@ export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
       setIsSubmitting(false);
       return;
     }
+    if (am != amount) {
+      toast("Amount mismatch. Please check the amount.");
+      setIsSubmitting(false);
+      return;
+    }
     const validTransaction = await processCheckDepositAction(
       check_id,
       name,
       Number(amount),
+      am, // use the amount from the scan, not user input
       date,
       account,
     );

@@ -34,10 +34,6 @@ export async function checkCheckExistence(
   amount: number,
   date: string,
 ) {
-  // const supabase = createClient(
-  //   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  //   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
-  // );
   const supabase = await createClient();
   const { data: idBased, error } = await supabase
     .schema("public")
@@ -51,7 +47,8 @@ export async function checkCheckExistence(
     .select()
     .eq("check_name", name)
     .eq("amount", amount)
-    .eq("check_date", date);
+    .eq("check_date", date)
+    .single();
   if (idBased == null && informationBased == null) {
     return false;
   }

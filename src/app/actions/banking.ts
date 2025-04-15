@@ -1,12 +1,12 @@
 "use server";
-import { transferFunds } from "@/services/banking/account";
 import {
   checkCheckExistence as checkCheckExistenceService,
+  createTransaction,
   depositFundsService,
   insertCheck as insertCheckService,
 } from "@/services/banking/transaction"; // Import the original service functions
-import { ServerError } from "@/utils/exceptions"; // Assuming ServerError is defined here
 import { revalidatePath } from "next/cache"; // To refresh data if needed
+import { getUserAccount } from "@/services/banking/account";
 
 // Action to check if a check exists
 export async function checkCheckExistenceAction(
@@ -70,6 +70,7 @@ export async function depositCheckFundsAction(
 export async function processCheckDepositAction(
   check_id: string,
   name: string,
+  userEnteredAmount: number,
   scannedAmount: number,
   date: string,
   accountNumber: string,
@@ -94,13 +95,26 @@ export async function processCheckDepositAction(
         error: "This check has already been deposited.",
       };
     }
-    console.log(`Check ID ${check_id} does not exist. Proceeding...`);
+    if (scannedAmount != userEnteredAmount) {
+      console.warn(
+        `Deposit amount mismatch for check ID: ${check_id}, Expected: ${userEnteredAmount}, Scanned: ${scannedAmount}`,
+      );
+      return {
+        success: false,
+        error: "The amount you entered does not match the amount on the check.",
+      };
+    }
 
     await insertCheckService(name, scannedAmount, date, check_id);
-    console.log(`Inserted check record for ID: ${check_id}`);
     await depositCheckFundsAction(scannedAmount, accountNumber);
-    console.log(
-      `Successfully deposited ${scannedAmount} into account ${accountNumber}`,
+    const account = await getUserAccount(accountNumber);
+
+    await createTransaction(
+      Number(account.id),
+      account.balance + scannedAmount,
+      scannedAmount,
+      "Check Deposit",
+      `Deposited $${scannedAmount} into Account ${accountNumber}`,
     );
 
     // --- Step 4: Revalidate relevant data paths ---
