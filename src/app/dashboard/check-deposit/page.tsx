@@ -6,7 +6,7 @@ import { Database } from "@/types/db";
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
 
 export default async function CheckDepositPage() {
-  const accounts = await fetchData<Account[]>("/api/account");
+  const accounts = await fetchData<Account[]>("/api/account?status=active");
   await isAuthenticated();
   return <CheckDeposit accounts={accounts} />;
 }
