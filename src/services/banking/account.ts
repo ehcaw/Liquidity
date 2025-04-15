@@ -10,21 +10,28 @@ async function createAccountNumber() {
   const supabase = await createClient();
   let accountNumber: string;
   let isUnique = false;
+  const desiredLength = 12; // Target length for the account number
 
   do {
-    accountNumber = Math.floor(
-      100000000000 + Math.random() * 900000000000,
-    ).toString();
-
-    const { data, error: selectError } = await supabase
-      .from("accounts")
-      .select()
-      .eq("account_number", accountNumber);
-    if (selectError) {
-      throw new ServerError(selectError.message);
+    accountNumber = "";
+    accountNumber += (Math.floor(Math.random() * 9) + 1).toString();
+    for (let i = 1; i < desiredLength; i++) {
+      accountNumber += Math.floor(Math.random() * 10).toString();
     }
 
-    isUnique = data.length === 0;
+    const { count, error: selectError } = await supabase
+      .from("accounts")
+      .select("account_number", { count: "exact", head: true })
+      .eq("account_number", accountNumber);
+
+    if (selectError) {
+      console.error("Supabase select error:", selectError);
+      throw new ServerError(
+        `Failed to check account number uniqueness: ${selectError.message}`,
+      );
+    }
+
+    isUnique = count === 0;
   } while (!isUnique);
 
   return accountNumber;
