@@ -6,11 +6,7 @@ import {
   insertCheck as insertCheckService,
 } from "@/services/banking/transaction"; // Import the original service functions
 import { revalidatePath } from "next/cache"; // To refresh data if needed
-import { fetchData } from "@/utils/fetch";
-import { Database } from "@/types/db";
 import { getUserAccount } from "@/services/banking/account";
-
-type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 
 // Action to check if a check exists
 export async function checkCheckExistenceAction(
@@ -114,7 +110,7 @@ export async function processCheckDepositAction(
     const account = await getUserAccount(accountNumber);
 
     await createTransaction(
-      Number(accountNumber),
+      Number(account.id),
       account.balance + scannedAmount,
       scannedAmount,
       "Check Deposit",
