@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -11,11 +12,30 @@ import {
   Shield,
   ChevronRight,
 } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+import { useState, useEffect } from "react";
+import type { User } from "@supabase/supabase-js";
+import { ProfileDropdown } from "./navbar";
 
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/footer";
 
 export default function LandingPage() {
+  const supabase = createClient();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || null);
+    };
+    getUser();
+  }, [supabase.auth]);
+
+  async function logout() {
+    await supabase.auth.signOut();
+    setUser(null);
+  }
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -51,15 +71,21 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link
-              href="/signin"
-              className="hidden text-sm font-medium hover:underline md:inline-block"
-            >
-              Log in
-            </Link>
-            <Link href="/register">
-              <Button>Get Started</Button>
-            </Link>
+            {user ? (
+              <ProfileDropdown user={user} logout={logout} />
+            ) : (
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/signin"
+                  className="hidden text-sm font-medium hover:underline md:inline-block"
+                >
+                  Log in
+                </Link>
+                <Link href="/register">
+                  <Button>Get Started</Button>
+                </Link>{" "}
+              </div>
+            )}
           </div>
         </div>
       </header>
