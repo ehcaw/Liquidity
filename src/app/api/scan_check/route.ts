@@ -1,5 +1,3 @@
-import { checkCheckExistence } from "@/services/banking/transaction";
-import { ServerError } from "@/utils/exceptions";
 import Groq from "groq-sdk";
 import z from "zod";
 
@@ -81,20 +79,7 @@ Return your response in this exact JSON format:
 
     // Validate with Zod schema
     const validated = CheckScanSchema.parse(jsonResponse);
-    const checkId =
-      validated.check_id ||
-      `name:${validated.name}/amount:${validated.amount}/date${validated.date}`;
     console.log(validated);
-    const isValid = await checkCheckExistence(
-      checkId,
-      validated.name || "",
-      validated.amount || 0,
-      validated.date || "",
-    );
-    if (isValid) {
-      throw new ServerError("Check already exists", 500);
-    }
-
     console.log("Validated check data:", validated);
     return Response.json({ data: validated }, { status: 200 });
   } catch (error) {
