@@ -311,6 +311,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_account_report: {
+        Args: {
+          p_min_balance?: number
+          p_max_balance?: number
+          p_date_from?: string
+          p_date_to?: string
+          p_zip_codes?: string[]
+          p_state_code?: string
+          p_city?: string
+          p_statuses?: Database["public"]["Enums"]["account_status_enum"][]
+        }
+        Returns: {
+          account_id: number
+          customer_name: string
+          account_type: Database["public"]["Enums"]["account_type_enum"]
+          balance: number
+          account_status: Database["public"]["Enums"]["account_status_enum"]
+          user_status: Database["public"]["Enums"]["user_status_enum"]
+          zip_code: string
+          city: string
+          state_code: string
+          created_date: string
+        }[]
+      }
       admin_count_active_accounts: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -426,16 +450,12 @@ export type Database = {
         | "Once"
       schedule_status_enum: "Active" | "Paused"
       transaction_status_enum: "Complete" | "Pending" | "Failed"
-<<<<<<< HEAD
       transaction_type_enum:
         | "Withdrawal"
         | "Deposit"
         | "Transfer"
         | "Payment"
         | "Check Deposit"
-=======
-      transaction_type_enum: "Withdrawal" | "Deposit" | "Transfer" | "Payment"
->>>>>>> 626c5ff (added database function types)
       user_role_enum: "User" | "Admin"
       user_status_enum: "Active" | "Suspended" | "Deleted" | "Locked"
     }

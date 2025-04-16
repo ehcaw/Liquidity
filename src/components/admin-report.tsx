@@ -123,7 +123,7 @@ export function ReportGenerator() {
     }
   };
 
-  const handleFilterChange = (key: keyof ReportFilters, value: any) => {
+  const handleFilterChange = (key: keyof ReportFilters, value: ReportFilters[keyof ReportFilters]) => {
     setFilters((prev) => ({
       ...prev,
       [key]: Array.isArray(value) && value.length === 0 ? undefined : value,

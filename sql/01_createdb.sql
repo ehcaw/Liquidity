@@ -308,7 +308,8 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
-=======
+
+
 create or replace function admin_get_total_bank_balance()
 returns decimal(15,2)
 as $$
@@ -369,9 +370,6 @@ $$
 language plpgsql
 stable
 ;
-<<<<<<< HEAD
->>>>>>> 2dc0d3a (Merge main into my-branch - solved conflicts)
-=======
 
 CREATE OR REPLACE FUNCTION admin_account_report(
   p_min_balance numeric(10,2) DEFAULT NULL,
@@ -422,4 +420,3 @@ BEGIN
   ORDER BY a.balance DESC;
 END;
 $$ LANGUAGE plpgsql STABLE;
->>>>>>> fb84a1a (admin dashboard with report generation)

@@ -132,8 +132,7 @@ interface ReportFilters {
 
 export async function getReport(filters: ReportFilters) {
   const supabase = await createClient();
-  // as any as a temp fix
-  const { data, error } = await supabase.rpc('admin_account_report' as any, filters);
+  const { data, error } = await supabase.rpc('admin_account_report', filters);
 
   if (error) {
     throw new ServerError(error.message);
