@@ -13,3 +13,14 @@ export const isAuthenticated = async () => {
     }
   }
 };
+
+export const isNotAuthenticated = async () => {
+  try {
+    await getAuthUser();
+    redirect('/dashboard')
+  } catch (error) {
+    if (error instanceof ServerError) {
+      redirect('/internal-error')
+    }
+  }
+};

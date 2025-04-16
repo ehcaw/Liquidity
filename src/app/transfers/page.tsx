@@ -10,7 +10,7 @@ type Account = Database["public"]["Tables"]["accounts"]["Row"];
 
 export default async function TransfersPage() {
   await isAuthenticated();
-  const accounts = await fetchData<Account[]>("/api/account");
+  const accounts = await fetchData<Account[]>("/api/account?status=active");
   return (
     <div className="container mx-auto max-w-3xl py-6">
       <div className="flex flex-col gap-6">

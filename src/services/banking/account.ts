@@ -30,7 +30,7 @@ async function createAccountNumber() {
   return accountNumber;
 }
 
-export async function getUserAccounts() {
+export async function getUserAllAccounts() {
   const supabase = await createClient();
   const authUser = await getAuthUser();
 
@@ -38,6 +38,22 @@ export async function getUserAccounts() {
     .from("accounts")
     .select()
     .eq("user_id", authUser.id);
+  if (selectError) {
+    throw new ServerError(selectError.message);
+  }
+
+  return data;
+}
+
+export async function getUserActiveAccounts() {
+  const supabase = await createClient();
+  const authUser = await getAuthUser();
+
+  const { data, error: selectError } = await supabase
+    .from("accounts")
+    .select()
+    .eq("user_id", authUser.id)
+    .eq("status", "Active");
   if (selectError) {
     throw new ServerError(selectError.message);
   }
@@ -179,6 +195,50 @@ export async function verifyUserAccount(account_number: string) {
     .eq("user_id", authUser.id);
   if (error || !data.length) {
     throw new ClientError(error?.message || "Account not found", 404);
+  }
+}
+
+export async function closeAccount(account_number: string) {
+  const supabase = await createClient();
+  const authUser = await getAuthUser();
+
+  const { data, error } = await supabase
+    .from("accounts")
+    .update({
+      status: "Closed",
+    })
+    .eq("account_number", account_number)
+    .eq("user_id", authUser.id)
+    .select();
+
+  if (error) {
+    throw new ServerError(error.message);
+  }
+
+  if (!data.length) {
+    throw new ClientError("Account not found", 404);
+  }
+}
+
+export async function activateAccount(account_number: string) {
+  const supabase = await createClient();
+  const authUser = await getAuthUser();
+
+  const { data, error } = await supabase
+    .from("accounts")
+    .update({
+      status: "Active",
+    })
+    .eq("account_number", account_number)
+    .eq("user_id", authUser.id)
+    .select();
+
+  if (error) {
+    throw new ServerError(error.message);
+  }
+
+  if (!data.length) {
+    throw new ClientError("Account not found", 404);
   }
 }
 

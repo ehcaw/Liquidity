@@ -38,7 +38,7 @@ export default async function AccountPage({
     <div className="flex flex-col gap-6 p-6">
       <AccountHeader account={account} />
       <AccountsStats stats={stats} dailyBalance={dailyBalance} />
-      <TransactionsTable transactions={transactions} />
+      <TransactionsTable transactions={transactions} active={account.status === "Active"} />
     </div>
   );
 }

@@ -31,10 +31,12 @@ type TimeFrame = "all" | "day" | "week" | "month" | "year";
 
 interface ITransactionsTableProps {
   transactions: Transaction[];
+  active?: boolean;
 }
 
 export default function TransactionsTable({
   transactions,
+  active = true,
 }: ITransactionsTableProps) {
   const [filteredTransactions, setFilteredTransactions] =
     useState<Transaction[]>(transactions);
@@ -76,9 +78,11 @@ export default function TransactionsTable({
     }
 
     filtered.sort((a, b) => {
-      const dateA = new Date(a.created_at)
-      const dateB = new Date(b.created_at)
-      return sortOrder === "newest" ? dateB.valueOf() - dateA.valueOf() : dateA.valueOf() - dateB.valueOf();
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      return sortOrder === "newest"
+        ? dateB.valueOf() - dateA.valueOf()
+        : dateA.valueOf() - dateB.valueOf();
     });
 
     setFilteredTransactions(filtered);
@@ -109,9 +113,7 @@ export default function TransactionsTable({
               size="sm"
               onClick={resetFilters}
               disabled={
-                timeFrame === "all" &&
-                sortOrder === "newest" &&
-                !searchQuery
+                timeFrame === "all" && sortOrder === "newest" && !searchQuery
               }
             >
               Reset
@@ -149,12 +151,12 @@ export default function TransactionsTable({
                 <SelectItem value="year">Last year</SelectItem>
               </SelectContent>
             </Select>
-            <Link href="/transfers">
-              <Button>Move Money</Button>
-            </Link>
-            <Link href="/dashboard/check-deposit">
-              <Button>Deposit Check</Button>
-            </Link>
+            <Button disabled={!active}>
+              <Link href="/transfers">Move Money</Link>
+            </Button>
+            <Button disabled={!active}>
+              <Link href="/dashboard/check-deposit">Deposit Check</Link>
+            </Button>
           </div>
         </div>
       </CardHeader>
