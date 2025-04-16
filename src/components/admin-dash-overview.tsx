@@ -91,29 +91,30 @@ export function DashboardOverview({ data }: DashboardOverviewProps) {
       </div>
 
       <div className="grid gap-6 md:grid-cols-7">
-        <Card className="md:col-span-4">
-          <CardHeader>
-            <CardTitle>Transactions Overview</CardTitle>
-            <CardDescription>
-              {data.totalTransactions.toLocaleString()} total transactions
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Chart would go here */}
-          </CardContent>
-        </Card>
+      <Card className="md:col-span-4 flex flex-col">
+        <CardHeader className="pb-2">
+          <CardTitle>Transactions Overview</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 flex items-center justify-center pt-0">
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <h2 className="text-[clamp(3rem,8vw,10rem)] font-bold tracking-tighter text-center leading-none">
+              {data.totalTransactions.toLocaleString()}
+            </h2>
+            <p className="text-lg text-muted-foreground mt-2">Total Transactions</p>
+          </div>
+        </CardContent>
+      </Card>
 
-        <Card className="md:col-span-3">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest account transactions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Recent transactions list would go here */}
-            <RecentTransactions transactions={data.recentTransactions} />
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="md:col-span-3">
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+          <CardDescription>Latest account transactions</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <RecentTransactions transactions={data.recentTransactions} />
+        </CardContent>
+      </Card>
+    </div>
     </div>
   )
 }

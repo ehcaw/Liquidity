@@ -118,3 +118,25 @@ export async function getAllUsers() {
   }
   return data;
 }
+
+interface ReportFilters {
+  p_city?: string;
+  p_date_from?: string;
+  p_date_to?: string;
+  p_max_balance?: number;
+  p_min_balance?: number;
+  p_state_code?: string;
+  p_statuses?: ('Active' | 'Frozen' | 'Closed' | 'Pending' | 'Overdrawn')[];
+  p_zip_codes?: string[];
+}
+
+export async function getReport(filters: ReportFilters) {
+  const supabase = await createClient();
+  // as any as a temp fix
+  const { data, error } = await supabase.rpc('admin_account_report' as any, filters);
+
+  if (error) {
+    throw new ServerError(error.message);
+  }
+  return data;
+}

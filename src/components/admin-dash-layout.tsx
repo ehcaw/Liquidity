@@ -6,6 +6,7 @@ import { DashboardOverview } from "@/components/admin-dash-overview"
 import { TransactionsTable } from "@/components/admin-transactions"
 import { AccountsTable } from "@/components/admin-accounts"
 import { UsersTable } from "@/components/admin-users"
+import { ReportGenerator } from "@/components/admin-report"
 
 type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
@@ -40,6 +41,7 @@ export function DashboardLayout({
             {activeTab === "transactions" && <TransactionsTable data={transactionsData} />}
             {activeTab === "accounts" && <AccountsTable data={accountsData} />}
             {activeTab === "users" && <UsersTable data={usersData} />}
+            {activeTab === "reports" && <ReportGenerator />}
         </DashboardSidebar>
     )
 }

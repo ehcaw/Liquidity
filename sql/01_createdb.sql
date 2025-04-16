@@ -63,7 +63,7 @@ create table transactions (
   amount numeric(10, 2) not null,
   description text not null,
   balance numeric(10, 2) not null,
-  status transaction_status_enum not null default 'Complete',
+  status transaction_status_enum not null default 'Pending',
   transaction_type transaction_type_enum not null,
   account_id int not null,
   primary key(id),
@@ -364,9 +364,62 @@ returns integer
 as $$
 begin
   return (select count(*) from transactions);
-end
+end;
 $$
 language plpgsql
 stable
 ;
+<<<<<<< HEAD
 >>>>>>> 2dc0d3a (Merge main into my-branch - solved conflicts)
+=======
+
+CREATE OR REPLACE FUNCTION admin_account_report(
+  p_min_balance numeric(10,2) DEFAULT NULL,
+  p_max_balance numeric(10,2) DEFAULT NULL,
+  p_date_from timestamp DEFAULT NULL,
+  p_date_to timestamp DEFAULT NULL,
+  p_zip_codes char(5)[] DEFAULT NULL,
+  p_state_code char(2) DEFAULT NULL,
+  p_city text DEFAULT NULL,
+  p_statuses account_status_enum[] DEFAULT NULL
+)
+RETURNS TABLE (
+  account_id int,
+  customer_name text,
+  account_type account_type_enum,
+  balance numeric(10,2),
+  account_status account_status_enum,
+  user_status user_status_enum,
+  zip_code char(5),
+  city text,
+  state_code char(2),
+  created_date timestamp
+) AS $$
+BEGIN 
+  RETURN QUERY
+  SELECT
+    a.id AS account_id,
+    CONCAT(u.first_name, ' ', u.last_name) AS customer_name,
+    a.account_type,
+    a.balance,
+    a.status AS account_status,
+    u.status AS user_status,
+    u.zipcode AS zip_code,
+    u.city,
+    u.state AS state_code,
+    a.created_at as created_date
+  FROM accounts a
+  JOIN users u ON a.user_id = u.id
+  WHERE
+    (p_min_balance IS NULL OR a.balance >= p_min_balance)
+    AND (p_max_balance IS NULL OR a.balance <= p_max_balance)
+    AND (p_date_from IS NULL OR a.created_at >= p_date_from)
+    AND (p_date_to IS NULL OR a.created_at <= p_date_to)
+    AND (p_zip_codes IS NULL OR u.zipcode = ANY(p_zip_codes))
+    AND (p_state_code IS NULL OR u.state = p_state_code)
+    AND (p_city IS NULL OR u.city ILIKE p_city)
+    AND (p_statuses IS NULL OR a.status = ANY(p_statuses))
+  ORDER BY a.balance DESC;
+END;
+$$ LANGUAGE plpgsql STABLE;
+>>>>>>> fb84a1a (admin dashboard with report generation)
