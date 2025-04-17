@@ -224,7 +224,6 @@ language plpgsql
 stable
 ;
 
-<<<<<<< HEAD
 CREATE OR REPLACE FUNCTION transfer_funds(
   p_from_account CHAR(12),
   p_to_account CHAR(12),
@@ -393,7 +392,7 @@ RETURNS TABLE (
   state_code char(2),
   created_date timestamp
 ) AS $$
-BEGIN 
+BEGIN
   RETURN QUERY
   SELECT
     a.id AS account_id,
