@@ -12,21 +12,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Database } from "@/types/db";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Download, MoreHorizontal, Eye, ArrowUpDown } from "lucide-react";
+import { Search, Download, ArrowUpDown } from "lucide-react";
 import { format } from "date-fns";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
@@ -41,7 +33,6 @@ export function AccountsTable({ data = [] }: AccountsTableProps) {
   const [accountStatus, setAccountStatus] = useState("all");
 
   const filteredAccounts = data.filter((account) => {
-    // Safely handle possible undefined/null values
     const accountName = account.name || '';
     const accountNumber = account.account_number || '';
     const accountId = account.id?.toString() || '';
@@ -142,7 +133,6 @@ export function AccountsTable({ data = [] }: AccountsTableProps) {
                   </TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Created</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -179,23 +169,6 @@ export function AccountsTable({ data = [] }: AccountsTableProps) {
                         {account.created_at ? format(new Date(account.created_at), 'MMM dd, yyyy') : 'N/A'}
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <Eye className="mr-2 h-4 w-4" /> View details
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>View transactions</DropdownMenuItem>
-                            <DropdownMenuItem>Manage account</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   ))
