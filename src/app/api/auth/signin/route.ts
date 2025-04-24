@@ -25,7 +25,10 @@ export async function POST(req: NextRequest) {
       throw authError;
     }
 
-    const { data , error: selectError } = await supabase.from('users').select().eq('email', body.email);
+    const { data , error: selectError } = await supabase
+      .from('users')
+      .select()
+      .ilike('email', body.email);
 
     if (selectError) {
       throw selectError;

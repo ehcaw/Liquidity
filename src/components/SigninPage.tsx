@@ -27,6 +27,8 @@ import { useRouter } from "next/navigation";
 import { Database } from "@/types/db";
 import { toast } from "sonner";
 
+type UserProfile = Database["public"]["Tables"]["users"]["Row"];
+
 type User = Database["public"]["Tables"]["users"]["Row"];
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,24 +43,34 @@ export default function SignInForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof SignInFormSchema>) {
+  async function onSubmit(values: z.infer<typeof SignInFormSchema>) {
     setIsLoading(true);
-    fetchData<User>("/api/auth/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
-      .then(() => {
-        router.replace("/dashboard");
-      })
-      .catch((error) => {
-        toast("Incorrect email or password");
-      })
-      .finally(() => {
-        setIsLoading(false);
+    try {
+      const userProfile = await fetchData<UserProfile>("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
       });
+  
+      if (userProfile) {
+        const userRole = userProfile.role;
+
+        if (userRole === "Admin") {
+          // sending to admin dash
+          router.replace("/admin");
+        } else {
+          router.replace("/dashboard");
+        } 
+
+      } else {
+        toast("Sign in successful, but user profile data was not received.");
+      }
+    } catch (error: any) {
+      const errorMessage = error?.message || "Incorrect email or password";
+      toast(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
