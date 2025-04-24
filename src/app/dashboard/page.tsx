@@ -11,9 +11,11 @@ type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 
 export default async function DashboardPage() {
   await isAuthenticated();
-  const stats = await fetchData<AccountStats>('/api/account/stats')
-  const accounts = await fetchData<Account[]>('/api/account')
-  const transactions = await fetchData<Transaction[]>('/api/account/transactions')
+  const stats = await fetchData<AccountStats>("/api/account/stats");
+  const accounts = await fetchData<Account[]>("/api/account");
+  const transactions = await fetchData<Transaction[]>(
+    "/api/account/transactions",
+  );
   return (
     <div className="flex flex-col gap-6 p-6">
       <div className="flex flex-col gap-2">
