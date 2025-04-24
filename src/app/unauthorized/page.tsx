@@ -16,7 +16,7 @@ export default function ForbiddenPage() {
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tight">403 Forbidden</h1>
             <p className="text-muted-foreground">
-              You don't have permission to access this resource
+              You do not have permission to access this resource
             </p>
           </div>
 
