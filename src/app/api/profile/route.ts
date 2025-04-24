@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { ProfileRequestBody } from "@/utils/zod/profile";
+import { NextRequest } from "next/server";
 
 export async function GET() {
   const supabase = await createClient();
@@ -29,7 +30,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   let body;
   try {
     body = ProfileRequestBody.parse(await req.json());
