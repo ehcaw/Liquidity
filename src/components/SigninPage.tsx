@@ -65,8 +65,14 @@ export default function SignInForm() {
       } else {
         toast("Sign in successful, but user profile data was not received.");
       }
-    } catch (error: any) {
-      const errorMessage = error?.message || "Incorrect email or password";
+    } catch (error: unknown) {
+      let errorMessage = "Incorrect email or password"
+      
+      if (error instanceof Error) {
+        errorMessage = error.message || errorMessage;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
       toast(errorMessage);
     } finally {
       setIsLoading(false);
