@@ -63,7 +63,7 @@ export const updateSession = async (request: NextRequest) => {
     const { data: userData, error: dbError } = await supabase
       .from("users")
       .select()
-      .eq("email", userEmail)
+      .ilike("email", userEmail) // case insensitive
       .single();
 
     if (dbError) {
