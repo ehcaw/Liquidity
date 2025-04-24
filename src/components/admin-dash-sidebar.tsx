@@ -1,4 +1,8 @@
 import { useState } from "react"
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
+import type { User } from "@supabase/supabase-js";
+
 
 import {
     BarChart3,
@@ -8,15 +12,13 @@ import {
     LogOut,
     PieChart,
     Users,
-    User,
+    User as UserIcon,
   } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 
@@ -29,6 +31,9 @@ interface DashboardSidebarProps {
   export function DashboardSidebar({ children, activeTab, setActiveTab }: DashboardSidebarProps) {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+    const supabase = createClient();
+    const [user, setUser] = useState<User | null>(null);
+    const router = useRouter();
 
     const navItems = [
         { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -37,6 +42,12 @@ interface DashboardSidebarProps {
         { id: "users", label: "Users", icon: Users },
         { id: "reports", label: "Reports", icon: PieChart },
     ]
+
+    async function logout() {
+      await supabase.auth.signOut();
+      setUser(null);
+      router.push("/");
+    }
     
     return (
         <div className="flex h-screen overflow-hidden bg-background">
@@ -134,22 +145,21 @@ interface DashboardSidebarProps {
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Header */}
         <header className="h-16 border-b bg-white flex items-center justify-between px-6">
-          {/*
-          <div className="flex items-center w-full max-w-md">
-            <Search className="h-4 w-4 text-muted-foreground absolute ml-3" />
-            <Input placeholder="Search..." className="pl-9 w-full max-w-md bg-slate-50" />
-          </div>
-          */}
           <div className="flex-1"></div>
           <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <User className="h-5 w-5" />
+                  <UserIcon className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={logout}
+                  className="text-red-500 cursor-pointer"
+                >
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
