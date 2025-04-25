@@ -401,6 +401,24 @@ export type Database = {
         }
         Returns: number
       }
+      get_user_payment_schedules: {
+        Args: {
+          uid: number
+        }
+        Returns: {
+          account_id: number
+          amount: number
+          created_at: string
+          day_of_month: number | null
+          day_of_week: Database["public"]["Enums"]["day_enum"] | null
+          day_of_year: string | null
+          end_date: string
+          frequency: Database["public"]["Enums"]["schedule_frequency_enum"]
+          id: number
+          start_date: string
+          status: Database["public"]["Enums"]["schedule_status_enum"]
+        }[]
+      }
       get_user_transactions: {
         Args: {
           uid: number

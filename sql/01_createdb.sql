@@ -85,7 +85,7 @@ create table payment_schedule (
   primary key(id),
   foreign key(account_id) references accounts(id) on update cascade on delete cascade,
   check (start_date <= end_date),
-  check (day_of_month is null or day_of_month between 1 and 31),
+  check (day_of_month is null or day_of_month between 1 and 28),
   check (frequency != 'Weekly' or day_of_week is not null),
   check (frequency != 'Monthly' or day_of_month is not null),
   check (frequency not in ('Annually', 'Once') or day_of_year is not null)
@@ -198,6 +198,22 @@ begin
     from accounts a
     inner join transactions t on t.account_id=a.id
     where a.account_number=an;
+end;
+$$
+language plpgsql
+stable
+;
+
+create or replace function get_user_payment_schedules(uid int)
+returns setof payment_schedule
+as $$
+begin
+  return query
+    select p.*
+    from users u
+    inner join accounts a on a.user_id=u.id
+    inner join payment_schedule p on p.account_id=a.id
+    where u.id=uid;
 end;
 $$
 language plpgsql
