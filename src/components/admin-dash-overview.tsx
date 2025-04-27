@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, CreditCard, DollarSign, Users } from "lucide-react"
+import { CreditCard, DollarSign, Users } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Database } from "@/types/db"
 import { RecentTransactions } from "@/components/admin-recent-transactions"

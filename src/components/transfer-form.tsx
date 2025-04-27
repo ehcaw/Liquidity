@@ -228,11 +228,7 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
                 )}
               />
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "Processing..." : "Transfer"}
               </Button>
             </form>

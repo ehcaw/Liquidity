@@ -6,9 +6,11 @@ import { Database } from "@/types/db";
 import { isAuthenticated } from "@/utils/isAuthenticated";
 import { fetchData } from "@/utils/fetch";
 import PromoteAdminBtn from "@/components/promote-admin-btn";
+import PaymentsTable from "@/components/payments-table";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
 type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
+type Payment = Database["public"]["Tables"]["payment_schedule"]["Row"];
 
 export default async function DashboardPage() {
   await isAuthenticated();
@@ -17,6 +19,8 @@ export default async function DashboardPage() {
   const transactions = await fetchData<Transaction[]>(
     "/api/account/transactions",
   );
+  const payments = await fetchData<Payment[]>("/api/payment");
+  console.log(payments);
   return (
     <div className="flex flex-col gap-6 p-6">
       <div className="flex flex-col gap-2">
@@ -29,6 +33,7 @@ export default async function DashboardPage() {
       <AccountsStats stats={stats} />
       <AccountsTable accounts={accounts} />
       <TransactionsTable transactions={transactions} />
+      <PaymentsTable payments={payments} />
     </div>
   );
 }

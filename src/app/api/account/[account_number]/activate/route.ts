@@ -1,4 +1,4 @@
-import { activateAccount, closeAccount } from "@/services/banking/account";
+import { activateAccount } from "@/services/banking/account";
 import { ClientError, ServerError } from "@/utils/exceptions";
 import { NextRequest } from "next/server";
 

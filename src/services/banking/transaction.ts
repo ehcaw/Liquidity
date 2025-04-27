@@ -1,9 +1,7 @@
-import { ClientError, ServerError } from "@/utils/exceptions";
+import { ServerError } from "@/utils/exceptions";
 import { createClient } from "@/utils/supabase/server";
 import { getAuthUser } from "@/services/auth/auth";
-import { transferFunds } from "./account";
 import { Database } from "@/types/db";
-import { deposit, getUserAccount, withdraw } from "@/services/banking/account";
 import { createLedgerEntry } from "./ledger";
 
 type TransactionType =
@@ -35,7 +33,7 @@ export async function checkCheckExistence(
   date: string,
 ) {
   const supabase = await createClient();
-  const { data: idBased, error } = await supabase
+  const { data: idBased } = await supabase
     .schema("public")
     .from("inserted_checks")
     .select("*")

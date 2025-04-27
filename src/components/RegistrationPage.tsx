@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -37,9 +37,12 @@ import { useRouter } from "next/navigation";
 type State = Database["public"]["Tables"]["states"]["Row"];
 type User = Database["public"]["Tables"]["users"]["Row"];
 
-export default function Register() {
+export interface IRegisterProps {
+  states: State["code"][];
+}
+
+export default function Register({ states }: IRegisterProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [states, setStates] = useState<State["code"][]>([]);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { fetchData } = useFetch();
@@ -58,21 +61,6 @@ export default function Register() {
       zipcode: "",
     },
   });
-
-  useEffect(() => {
-    fetchData<State[]>("/api/states")
-      .then((data) => {
-        if (data) {
-          setStates(data.map((state) => state.code));
-        } else {
-          throw Error("No data returned from states API");
-        }
-      })
-      .catch((error) => {
-        alert(error.message);
-        console.error(error);
-      });
-  }, []);
 
   function onSubmit(values: z.infer<typeof RegisterFormSchema>) {
     setIsLoading(true);

@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import {
   CardContent,
   CardDescription,
@@ -8,23 +5,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Database } from "@/types/db";
-import useFetch from "@/hooks/useFetch";
 import { Badge } from "@/components/ui/badge";
 import ProfileForm, { FormValues } from "@/app/(profile)/profile/ProfileForm";
+import { fetchData } from "@/utils/fetch";
 
 type User = Database["public"]["Tables"]["users"]["Row"];
+type State = Database["public"]["Tables"]["states"]["Row"];
 
-export default function Profile() {
-  const [user, setUser] = useState<User | null>(null);
-  const { fetchData } = useFetch();
-
-  useEffect(() => {
-    fetchData<User>("/api/profile").then((data) => {
-      setUser(data);
-    }).catch((error) => {
-      console.error(error);
-    });
-  }, []);
+export default async function Profile() {
+  const user = await fetchData<User>("/api/profile");
+  const states = await fetchData<State[]>("/api/states");
 
   const formUser: FormValues = {
     first_name: user?.first_name || "",
@@ -35,7 +25,7 @@ export default function Profile() {
     city: user?.city || "",
     state: user?.state || "",
     zipcode: user?.zipcode || "",
-  }
+  };
 
   return (
     <>
@@ -48,15 +38,22 @@ export default function Profile() {
             </CardDescription>
           </div>
           <div className="flex space-x-3 items-center">
-            <Badge variant={"default"}>{user?.created_at.split("T")[0] || "Created At"}</Badge>
+            <Badge variant={"default"}>
+              {user?.created_at.split("T")[0] || "Created At"}
+            </Badge>
             <Badge variant={"default"}>{user?.status || "Status"}</Badge>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        {
-          user ? <ProfileForm user={formUser} /> : <div>Loading...</div>
-        }
+        {user ? (
+          <ProfileForm
+            user={formUser}
+            states={states.map((state) => state.code)}
+          />
+        ) : (
+          <div>Loading...</div>
+        )}
       </CardContent>
     </>
   );

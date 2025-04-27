@@ -1,5 +1,7 @@
+'use client'
+
 import { ProfileFormSchema } from "@/utils/zod/form";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,27 +32,17 @@ export type FormValues = z.infer<typeof ProfileFormSchema>;
 
 interface IProfileFormProps {
   user: FormValues;
+  states: State['code'][];
 }
 
-const ProfileForm: React.FC<IProfileFormProps> = ({ user }) => {
+const ProfileForm: React.FC<IProfileFormProps> = ({ user, states }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [updateduUser] = useState<FormValues>(user);
-  const [states, setStates] = useState<State["code"][]>([]);
   const { fetchData } = useFetch();
   const form = useForm<FormValues>({
     resolver: zodResolver(ProfileFormSchema),
     defaultValues: updateduUser,
   });
-
-  useEffect(() => {
-    fetchData<State[]>("/api/states")
-      .then((data) => {
-        setStates(data?.map((state) => state.code) || []);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
 
   const onSave = async (data: FormValues) => {
     setIsSaving(true);
