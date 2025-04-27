@@ -22,6 +22,7 @@ export default async function AccountPage({
   try {
     await verifyUserAccount(account_number);
   } catch (error) {
+    console.error(error);
     redirect(`/dashboard`);
   }
   const account = await fetchData<Account>(`/api/account/${account_number}`);

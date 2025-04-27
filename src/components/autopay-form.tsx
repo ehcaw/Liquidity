@@ -150,6 +150,7 @@ export default function AutoPayForm({ accounts }: IAutoPayFormProps) {
       toast.error("Successfully scheduled payment");
       router.push("/dashboard");
     } catch (error) {
+      console.error(error);
       toast.error("Error creating payment schedule");
     } finally {
       setIsSubmitting(false);

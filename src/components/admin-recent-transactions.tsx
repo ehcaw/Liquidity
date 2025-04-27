@@ -1,6 +1,6 @@
 import { Database } from "@/types/db"
 import { Badge } from "@/components/ui/badge"
-import { ArrowDown, ArrowUp, CreditCard, Wallet, Send, Receipt } from "lucide-react"
+import { ArrowDown, ArrowUp, Wallet, Send, Receipt } from "lucide-react"
 
 type Transaction = Database["public"]["Tables"]["transactions"]["Row"]
 

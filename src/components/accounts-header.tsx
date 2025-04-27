@@ -45,7 +45,7 @@ function getStatusVariant(
 const AccountsHeader: React.FC<IAccountsDetailsProps> = ({
   account: accountProp,
 }) => {
-  const [account, setAccount] = useState<Account>(accountProp);
+  const [account] = useState<Account>(accountProp);
 
   return (
     <Card>
@@ -55,11 +55,10 @@ const AccountsHeader: React.FC<IAccountsDetailsProps> = ({
             <div className="flex space-x-4">
               <h1 className="text-2xl font-bold">{account.name}</h1>
               {account.status === "Active" ? (
-                <CloseAccountButton account={account} setAccount={setAccount} />
+                <CloseAccountButton account={account} />
               ) : (
                 <ActivateAccountButton
                   account={account}
-                  setAccount={setAccount}
                 />
               )}
             </div>
@@ -87,10 +86,8 @@ const AccountsHeader: React.FC<IAccountsDetailsProps> = ({
 
 const CloseAccountButton = ({
   account,
-  setAccount,
 }: {
   account: Account;
-  setAccount: React.Dispatch<React.SetStateAction<Account>>;
 }) => {
   const { fetchData } = useFetch();
   const router = useRouter();
@@ -141,10 +138,8 @@ const CloseAccountButton = ({
 
 const ActivateAccountButton = ({
   account,
-  setAccount,
 }: {
   account: Account;
-  setAccount: React.Dispatch<React.SetStateAction<Account>>;
 }) => {
   const { fetchData } = useFetch();
   const router = useRouter();

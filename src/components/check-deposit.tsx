@@ -37,10 +37,8 @@ import {
 } from "./ui/select";
 import { toast } from "sonner";
 import { processCheckDepositAction } from "@/app/actions/banking";
-import { fetchData } from "@/utils/fetch";
 
 type Account = Database["public"]["Tables"]["accounts"]["Row"];
-type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 
 export default function CheckDeposit({ accounts }: { accounts: Account[] }) {
   const router = useRouter();

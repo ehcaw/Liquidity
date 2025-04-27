@@ -29,7 +29,6 @@ import { toast } from "sonner";
 
 type UserProfile = Database["public"]["Tables"]["users"]["Row"];
 
-type User = Database["public"]["Tables"]["users"]["Row"];
 export default function SignInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();

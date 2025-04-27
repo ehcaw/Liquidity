@@ -75,7 +75,7 @@ export default function PaymentsTable({ payments }: IPaymentsTableProps) {
         <CardContent>
           {schedules.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <p>You don't have any automatic payments set up yet.</p>
+              <p>You don&#39;t have any automatic payments set up yet.</p>
               <p className="mt-2">
                 <Link href="/payments/schedule">
                   <Button variant="outline">

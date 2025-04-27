@@ -49,6 +49,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-function getAllPaymentSchedules() {
-  throw new Error("Function not implemented.");
-}

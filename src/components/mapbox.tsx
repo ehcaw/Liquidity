@@ -31,7 +31,7 @@ export default function MapWithGeocoder({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
+  const [_, setMapLoaded] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number] | null>([

@@ -32,7 +32,7 @@ interface DashboardSidebarProps {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
     const supabase = createClient();
-    const [user, setUser] = useState<User | null>(null);
+    const [_, setUser] = useState<User | null>(null);
     const router = useRouter();
 
     const navItems = [
