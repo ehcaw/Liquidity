@@ -1,0 +1,617 @@
+/* Modern Blue & Black Theme Dashboard */
+:root {
+    --primary-blue: #3b82f6;
+    --primary-blue-dark: #2563eb;
+    --primary-blue-light: #60a5fa;
+    --accent-blue: #38bdf8;
+    --dark-bg: #111827;
+    --dark-card: #1f2937;
+    --dark-card-hover: #2d3748;
+    --light-text: #f9fafb;
+    --muted-text: #9ca3af;
+    --border-dark: #374151;
+    --glow-blue: rgba(59, 130, 246, 0.5);
+    --success-green: #10b981;
+    --warning-orange: #f59e0b;
+    --danger-red: #ef4444;
+}
+
+/* Base Styles */
+.dashboard-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--dark-bg);
+    color: var(--light-text);
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        sans-serif;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Add a subtle pattern overlay */
+.dashboard-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(59, 130, 246, 0.15) 0%,
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(59, 130, 246, 0.1) 0%,
+            transparent 30%
+        );
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Header Styles */
+.dashboard-header {
+    background: linear-gradient(to right, var(--dark-bg), var(--dark-card));
+    border-bottom: 1px solid var(--border-dark);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 10;
+}
+
+.dashboard-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dashboard-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dashboard-logo-icon {
+    font-size: 2rem;
+    background: linear-gradient(
+        135deg,
+        var(--primary-blue),
+        var(--accent-blue)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.dashboard-logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    background: linear-gradient(
+        to right,
+        var(--light-text),
+        var(--primary-blue-light)
+    );
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.logout-button {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid var(--border-dark) !important;
+    color: var(--light-text) !important;
+    border-radius: 6px !important;
+    padding: 0.5rem 1.25rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.logout-button:hover {
+    background: rgba(0, 0, 0, 0.6) !important;
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 0 0 2px var(--glow-blue) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Main Content Styles */
+.dashboard-main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+/* Page Title Area */
+.page-title-area {
+    margin-bottom: 2rem;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.page-title-area::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    height: 70%;
+    width: 4px;
+    background: linear-gradient(
+        to bottom,
+        var(--primary-blue),
+        var(--primary-blue-light)
+    );
+    border-radius: 4px;
+}
+
+.page-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+    color: var(--light-text);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.page-description {
+    font-size: 1rem;
+    color: var(--muted-text);
+    max-width: 600px;
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .content-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .content-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .actions-card {
+        grid-column: span 2 / span 2;
+    }
+    .output-card {
+        grid-column: span 3 / span 3;
+    }
+}
+
+/* Card Styles */
+.content-card {
+    background: var(--dark-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-dark);
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.content-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(
+        to right,
+        var(--primary-blue),
+        var(--primary-blue-light)
+    );
+    border-radius: 4px 4px 0 0;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    background: var(--dark-card-hover);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--light-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-title::before {
+    content: "•";
+    color: var(--primary-blue);
+    font-size: 1.75rem;
+    line-height: 0;
+}
+
+/* Account Select Styling */
+.account-select {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-dark);
+    border-radius: 8px;
+    color: var(--light-text);
+    appearance: none;
+    position: relative;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+}
+
+.account-select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow:
+        0 0 0 3px var(--glow-blue),
+        0 2px 8px rgba(0, 0, 0, 0.2) inset;
+}
+
+.account-select option {
+    background-color: var(--dark-card);
+    color: var(--light-text);
+}
+
+.account-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Cool select dropdown arrow */
+.account-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2360A5FA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.5em;
+    padding-right: 3rem;
+}
+
+/* Action Buttons Area */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Style override for Button component. These might need !important since your Button component might have its own styles */
+.action-buttons button {
+    background: linear-gradient(
+        to right,
+        var(--primary-blue-dark),
+        var(--primary-blue)
+    ) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    z-index: 1 !important;
+}
+
+.action-buttons button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transition: all 0.5s ease;
+    z-index: -1;
+}
+
+.action-buttons button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
+}
+
+.action-buttons button:hover::before {
+    left: 100%;
+}
+
+.action-buttons button:disabled {
+    background: rgba(59, 130, 246, 0.5) !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* Output Box Styling */
+.output-box {
+    min-height: 100px;
+    border-radius: 8px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 1.25rem;
+    font-family: "Fira Code", "Consolas", monospace;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--light-text);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1) inset;
+    position: relative;
+    overflow: hidden;
+}
+
+.output-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--primary-blue), transparent);
+    border-radius: 4px 0 0 4px;
+}
+
+/* Footer Styles */
+.dashboard-footer {
+    background-color: var(--dark-bg);
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--muted-text);
+    border-top: 1px solid var(--border-dark);
+    margin-top: 2rem;
+}
+
+.dashboard-footer::before {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        var(--primary-blue),
+        transparent
+    );
+    margin: 0 auto 1.5rem;
+    border-radius: 3px;
+}
+
+/* Responsive Design Improvements */
+@media (max-width: 640px) {
+    .dashboard-header {
+        padding: 1rem;
+    }
+
+    .dashboard-main {
+        padding: 1.5rem 1rem;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons button {
+        width: 100%;
+    }
+}
+
+/* Enhanced Form Styling */
+.action-form {
+    padding: 1.5rem 0;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+    color: var(--primary-blue-light);
+    font-size: 0.9rem;
+    letter-spacing: 0.025em;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-dark);
+    border-radius: 8px;
+    color: var(--light-text);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow:
+        0 0 0 3px var(--glow-blue),
+        0 2px 8px rgba(0, 0, 0, 0.2) inset;
+}
+
+.form-group input[type="number"] {
+    appearance: textfield;
+}
+
+.form-group input[type="number"]::-webkit-inner-spin-button,
+.form-group input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Dollar sign prefix for amount inputs */
+.form-group.amount-input {
+    position: relative;
+}
+
+.form-group.amount-input::before {
+    content: "$";
+    position: absolute;
+    left: 0.75rem;
+    top: 2.4rem;
+    color: var(--muted-text);
+    font-size: 1rem;
+    z-index: 1;
+}
+
+.form-group.amount-input input {
+    padding-left: 1.5rem;
+}
+
+/* Form Actions Styling */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.form-actions button {
+    flex: 1;
+}
+
+/* Submit Button */
+.form-actions button[type="submit"],
+.form-actions button:first-child:not([variant="outline"]) {
+    background: linear-gradient(
+        to right,
+        var(--primary-blue-dark),
+        var(--primary-blue)
+    ) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-actions button[type="submit"]:hover,
+.form-actions button:first-child:not([variant="outline"]):hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* Cancel Button */
+.form-actions button[variant="outline"],
+.form-actions button:last-child[variant="outline"] {
+    background: transparent !important;
+    color: var(--light-text) !important;
+    border: 1px solid var(--border-dark) !important;
+    box-shadow: none !important;
+}
+
+.form-actions button[variant="outline"]:hover,
+.form-actions button:last-child[variant="outline"]:hover {
+    border-color: var(--primary-blue) !important;
+    background: rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Success and Error States */
+.success-message {
+    color: var(--success-green);
+    border-left: 3px solid var(--success-green);
+    padding-left: 1rem;
+    margin-top: 1rem;
+}
+
+.error-message {
+    color: var(--danger-red);
+    border-left: 3px solid var(--danger-red);
+    padding-left: 1rem;
+    margin-top: 1rem;
+}
+
+/* Transfer To Account Select */
+.form-group select#toAccount {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2360A5FA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.5em;
+    padding-right: 3rem;
+}
+
+/* Card modifications for action forms */
+.content-card.with-form {
+    transition: all 0.3s ease;
+    max-height: none;
+    height: auto;
+}
+
+/* Animation for form transitions */
+@keyframes slideIn {
+    from {
+        transform: translateX(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.action-form {
+    animation: slideIn 0.3s ease;
+}
+
+/* Fix for small screens */
+@media (max-width: 640px) {
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-group.amount-input::before {
+        top: 2.3rem;
+    }
+}

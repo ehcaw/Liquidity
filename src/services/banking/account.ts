@@ -61,6 +61,31 @@ export async function getUserActiveAccounts() {
   return data;
 }
 
+export async function getUserActiveAccountsByToken(token: string) {
+  const supabase = await createClient();
+  // Verify the token and get the user
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser(token);
+  if (authError || !user) {
+    throw new ClientError("Invalid token", 401);
+  }
+
+  const { data, error: selectError } = await supabase
+    .from("accounts")
+    .select()
+    .eq("user_id", Number(user.id))
+    .eq("status", "Active");
+
+  if (selectError) {
+    console.log(selectError.message);
+    throw new ServerError(selectError.message);
+  }
+
+  return data;
+}
+
 export async function getUserAccount(account_number: string) {
   const supabase = await createClient();
   await getAuthUser();
@@ -171,6 +196,21 @@ export async function getAccountTransactions(account_number: string) {
 export async function getAccountDailyBalance(account_number: string) {
   const supabase = await createClient();
   await getAuthUser();
+  const account = await getUserAccount(account_number);
+
+  const { data, error } = await supabase.rpc("get_daily_balance", {
+    aid: account.id,
+  });
+
+  if (error) {
+    throw new ServerError(error.message);
+  }
+
+  return data;
+}
+
+export async function getAccountDailyBalanceProxy(account_number: string) {
+  const supabase = await createClient();
   const account = await getUserAccount(account_number);
 
   const { data, error } = await supabase.rpc("get_daily_balance", {
@@ -309,6 +349,41 @@ export async function withdraw(
     })
     .eq("account_number", account_number)
     .eq("user_id", authUser.id)
+    .select();
+
+  if (error) {
+    throw new ServerError(error.message);
+  }
+
+  if (!create_transaction) {
+    return null;
+  }
+  return await createTransaction(
+    data[0].id,
+    data[0].balance,
+    amount * -1,
+    "Withdrawal",
+    `Withdrew $${amount} from ${account.name}`,
+  );
+}
+export async function withdrawProxy(
+  account_number: string,
+  amount: number,
+  create_transaction: boolean = true,
+) {
+  const supabase = await createClient();
+  const account = await getUserAccount(account_number);
+
+  if (account.balance < amount) {
+    throw new ClientError("Insufficient funds", 400);
+  }
+
+  const { data, error } = await supabase
+    .from("accounts")
+    .update({
+      balance: account.balance - amount,
+    })
+    .eq("account_number", account_number)
     .select();
 
   if (error) {

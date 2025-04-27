@@ -1,5 +1,4 @@
 import { deposit, transfer, withdraw } from "@/services/banking/account";
-import { createTransaction } from "@/services/banking/transaction";
 import { Database } from "@/types/db";
 import { ClientError, ServerError } from "@/utils/exceptions";
 import { PostTransactionRequestBody } from "@/utils/zod/transaction";
