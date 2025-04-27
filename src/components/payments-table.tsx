@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,9 +19,8 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Database } from "@/types/db";
-import useFetch from "@/hooks/useFetch";
 import { formatCurrency, formatDate } from "@/utils/format";
-import { Calendar, Clock, Play, Pause, Trash2 } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import Link from "next/link";
 
 type PaymentSchedule = Database["public"]["Tables"]["payment_schedule"]["Row"];
@@ -31,43 +30,7 @@ export interface IPaymentsTableProps {
 }
 
 export default function PaymentsTable({ payments }: IPaymentsTableProps) {
-  const [schedules, setSchedules] = useState<PaymentSchedule[]>(payments);
-  const { fetchData } = useFetch();
-
-  // const toggleScheduleStatus = async (id: number, currentStatus: string) => {
-  //   try {
-  //     const newStatus = currentStatus === "Active" ? "Paused" : "Active";
-  //     await fetchData(`/api/payment-schedule/${id}`, {
-  //       method: "PATCH",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ status: newStatus }),
-  //     });
-  //
-  //     // Refresh schedules after update
-  //     loadSchedules();
-  //   } catch (error) {
-  //     console.error("Error updating schedule status:", error);
-  //   }
-  // };
-
-  // const deleteSchedule = async (id: number) => {
-  //   if (!confirm("Are you sure you want to delete this automatic payment?")) {
-  //     return;
-  //   }
-  //
-  //   try {
-  //     await fetchData(`/api/payment-schedule/${id}`, {
-  //       method: "DELETE",
-  //     });
-  //
-  //     // Refresh schedules after deletion
-  //     // loadSchedules();
-  //   } catch (error) {
-  //     console.error("Error deleting schedule:", error);
-  //   }
-  // };
+  const [schedules] = useState<PaymentSchedule[]>(payments);
 
   const getFrequencyDisplay = (schedule: PaymentSchedule) => {
     switch (schedule.frequency) {
@@ -131,7 +94,6 @@ export default function PaymentsTable({ payments }: IPaymentsTableProps) {
                     <TableHead>Frequency</TableHead>
                     <TableHead>Date Range</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -166,34 +128,6 @@ export default function PaymentsTable({ payments }: IPaymentsTableProps) {
                         >
                           {schedule.status}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            // onClick={() =>
-                            //   toggleScheduleStatus(schedule.id, schedule.status)
-                            // }
-                            title={
-                              schedule.status === "Active" ? "Pause" : "Resume"
-                            }
-                          >
-                            {schedule.status === "Active" ? (
-                              <Pause className="h-4 w-4" />
-                            ) : (
-                              <Play className="h-4 w-4" />
-                            )}
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            // onClick={() => deleteSchedule(schedule.id)}
-                            title="Delete"
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
