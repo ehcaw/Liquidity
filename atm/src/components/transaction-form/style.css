@@ -1,0 +1,173 @@
+:root {
+  --primary-blue: #3b82f6;
+  --primary-blue-dark: #2563eb;
+  --primary-blue-light: #60a5fa;
+  --accent-blue: #38bdf8;
+  --dark-bg: #111827;
+  --dark-card: #1f2937;
+  --dark-card-hover: #2d3748;
+  --light-text: #f9fafb;
+  --muted-text: #9ca3af;
+  --border-dark: #374151;
+  --glow-blue: rgba(59, 130, 246, 0.5);
+  --danger-red: #ef4444;
+}
+
+.transaction-form .header {
+  text-align: center;
+  color: var(--primary-blue);
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.transaction-form .form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+  position: relative;
+}
+
+.transaction-form .radio-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.transaction-form .radio-group-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--border-dark);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  cursor: pointer;
+}
+
+.transaction-form .radio-group-item label {
+  text-align: center;
+  cursor: pointer;
+}
+
+.transaction-form .radio-group-item input {
+  display: none;
+}
+
+.transaction-form .radio-group-item-selected {
+  border: 2px solid var(--primary-blue);
+}
+
+.transaction-form .radio-group-item-selected label {
+  color: var(--primary-blue);
+}
+
+.transaction-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--light-text);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.transaction-form input[type="number"] {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-dark);
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--light-text);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+}
+
+.transaction-form input[type="number"]:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow:
+    0 0 0 3px var(--glow-blue),
+    0 2px 8px rgba(0, 0, 0, 0.2) inset;
+}
+
+/* Modern floating label effect on focus */
+.transaction-form input:focus+label {
+  color: var(--primary-blue-light);
+}
+
+.transaction-button {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  background: linear-gradient(to right,
+      var(--primary-blue-dark),
+      var(--primary-blue)) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.transaction-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent);
+  transition: all 0.5s ease;
+}
+
+.transaction-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
+}
+
+.transaction-button:hover::before {
+  left: 100%;
+}
+
+.error-message {
+  color: var(--danger-red);
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  padding: 0.75rem;
+  border-left: 3px solid var(--danger-red);
+}
+
+.transaction-hint {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted-text);
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-dark);
+}
+
+/* Add a subtle pulse animation to the transaction button */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
