@@ -1,5 +1,5 @@
 import { Shield } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import AccountVerification from "../account-verification"
 import TransactionForm, { TransactionType } from "../transaction-form";
 import Completion from "../completion";
