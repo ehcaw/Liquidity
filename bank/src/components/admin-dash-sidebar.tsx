@@ -1,64 +1,69 @@
-import { useState } from "react"
+import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 
-
 import {
-    BarChart3,
-    CreditCard,
-    Landmark,
-    LayoutDashboard,
-    LogOut,
-    PieChart,
-    Users,
-    User as UserIcon,
-  } from "lucide-react"
-import { Button } from "@/components/ui/button"
+  BarChart3,
+  CreditCard,
+  Landmark,
+  LayoutDashboard,
+  LogOut,
+  PieChart,
+  Users,
+  User as UserIcon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 interface DashboardSidebarProps {
-    children: React.ReactNode
-    activeTab: string
-    setActiveTab: (tab: string) => void
+  children: React.ReactNode;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
+
+export function DashboardSidebar({
+  children,
+  activeTab,
+  setActiveTab,
+}: DashboardSidebarProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const supabase = createClient();
+  const [_, setUser] = useState<User | null>(null);
+  const router = useRouter();
+
+  const navItems = [
+    { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "accounts", label: "Accounts", icon: CreditCard },
+    { id: "transactions", label: "Transactions", icon: BarChart3 },
+    { id: "users", label: "Users", icon: Users },
+    { id: "reports", label: "Reports", icon: PieChart },
+  ];
+
+  async function logout() {
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push("/");
   }
 
-  export function DashboardSidebar({ children, activeTab, setActiveTab }: DashboardSidebarProps) {
-
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-    const supabase = createClient();
-    const [_, setUser] = useState<User | null>(null);
-    const router = useRouter();
-
-    const navItems = [
-        { id: "overview", label: "Overview", icon: LayoutDashboard },
-        { id: "accounts", label: "Accounts", icon: CreditCard },
-        { id: "transactions", label: "Transactions", icon: BarChart3 },
-        { id: "users", label: "Users", icon: Users },
-        { id: "reports", label: "Reports", icon: PieChart },
-    ]
-
-    async function logout() {
-      await supabase.auth.signOut();
-      setUser(null);
-      router.push("/");
-    }
-    
-    return (
-        <div className="flex h-screen overflow-hidden bg-background">
-        {/* Sidebar */}
-        <aside
-            className={`${
-            isSidebarOpen ? "w-64" : "w-20"
-            } bg-slate-900 text-white transition-all duration-300 ease-in-out flex flex-col`}
-        >
+  return (
+    <div className="flex h-screen overflow-hidden bg-background">
+      {/* Sidebar */}
+      <aside
+        className={`${isSidebarOpen ? "w-64" : "w-20"
+          } bg-slate-900 text-white transition-all duration-300 ease-in-out flex flex-col`}
+      >
         <div className="flex items-center h-16 px-4 border-b border-slate-800">
-          <div className={`flex items-center ${isSidebarOpen ? "justify-between w-full" : "justify-center"}`}>
+          <div
+            className={`flex items-center ${isSidebarOpen ? "justify-between w-full" : "justify-center"}`}
+          >
             {isSidebarOpen && (
               <div className="flex items-center gap-2">
                 <Landmark className="h-6 w-6" />
@@ -114,13 +119,11 @@ interface DashboardSidebarProps {
               <li key={item.id}>
                 <button
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center w-full ${
-                    isSidebarOpen ? "justify-start px-4" : "justify-center"
-                  } py-2 rounded-md ${
-                    activeTab === item.id
+                  className={`flex items-center w-full ${isSidebarOpen ? "justify-start px-4" : "justify-center"
+                    } py-2 rounded-md ${activeTab === item.id
                       ? "bg-slate-800 text-white"
                       : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                  }`}
+                    }`}
                 >
                   <item.icon className="h-5 w-5" />
                   {isSidebarOpen && <span className="ml-3">{item.label}</span>}
@@ -131,9 +134,8 @@ interface DashboardSidebarProps {
         </nav>
         <div className="p-4 border-t border-slate-800">
           <button
-            className={`flex items-center ${
-              isSidebarOpen ? "justify-start w-full" : "justify-center"
-            } text-slate-400 hover:text-white`}
+            className={`flex items-center ${isSidebarOpen ? "justify-start w-full" : "justify-center"
+              } text-slate-400 hover:text-white`}
           >
             <LogOut className="h-5 w-5" />
             {isSidebarOpen && <span className="ml-3">Logout</span>}
@@ -149,11 +151,35 @@ interface DashboardSidebarProps {
           <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-9 w-9 rounded-full"
+                >
                   <UserIcon className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Link href="/profile" className="w-full">
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/dashboard" className="w-full">
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/dashboard/map" className="w-full">
+                    Branches
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/dashboard/check-deposit" className="w-full">
+                    Deposit Check
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={logout}
                   className="text-red-500 cursor-pointer"
@@ -166,9 +192,10 @@ interface DashboardSidebarProps {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6 bg-slate-50">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6 bg-slate-50">
+          {children}
+        </main>
       </div>
     </div>
-    )
-
-  }
+  );
+}
