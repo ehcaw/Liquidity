@@ -78,6 +78,7 @@ export function ProfileDropdown({ user, logout }: ProfileDropdownProps) {
 export function Navbar() {
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
+  console.log(user);
   const router = useRouter();
 
   useEffect(() => {
