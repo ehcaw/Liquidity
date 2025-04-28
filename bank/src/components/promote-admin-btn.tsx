@@ -9,7 +9,7 @@ const PromoteAdminBtn = () => {
   const { fetchData } = useFetch();
 
   const handlePromoteAdmin = async () => {
-    await fetchData("/api/admin/promote", {
+    await fetchData("/api/profile/promote-admin", {
       method: "PUT",
     })
       .then(() => {
