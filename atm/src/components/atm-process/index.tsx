@@ -1,6 +1,6 @@
 import { Shield } from "lucide-react";
 import { useState } from "react";
-import AccountVerification from "../account-verification"
+import AccountVerification from "../account-verification";
 import TransactionForm, { TransactionType } from "../transaction-form";
 import Completion from "../completion";
 import "./style.css";
@@ -10,6 +10,8 @@ enum AtmStep {
   TRANSACTION = 1,
   COMPLETION = 2,
 }
+
+const bank_url = import.meta.env.VITE_BANK_URL;
 
 const Atm = () => {
   const [currentStep, setCurrentStep] = useState<AtmStep>(
@@ -25,7 +27,7 @@ const Atm = () => {
 
   const verifyAccount = async (accountNumber: string, pin: string) => {
     const res = await fetch(
-      `http://localhost:3000/api/account/${accountNumber}/pin-code/${pin}/verify`,
+      `${bank_url}/api/account/${accountNumber}/pin-code/${pin}/verify`,
       {
         method: "GET",
       },
@@ -47,7 +49,7 @@ const Atm = () => {
   // Process the transaction
   const processTransaction = async (type: TransactionType, amount: number) => {
     // Simulate transaction processing
-    const res = await fetch("http://localhost:3000/api/proxy", {
+    const res = await fetch(`${bank_url}/api/proxy`, {
       method: "POST",
       body: JSON.stringify({
         account_number: accountInfo.accountNumber,
@@ -141,4 +143,3 @@ const Atm = () => {
 };
 
 export default Atm;
-
