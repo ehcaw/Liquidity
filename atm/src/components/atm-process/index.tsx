@@ -11,7 +11,7 @@ enum AtmStep {
   COMPLETION = 2,
 }
 
-const bank_url = import.meta.env.VITE_BANK_URL;
+const bank_url = import.meta.env.VITE_BANK_DOMAIN;
 
 const Atm = () => {
   const [currentStep, setCurrentStep] = useState<AtmStep>(
