@@ -27,7 +27,7 @@ const Atm = () => {
 
   const verifyAccount = async (accountNumber: string, pin: string) => {
     const res = await fetch(
-      `${bank_url}/api/account/${accountNumber}/pin-code/${pin}/verify`,
+      `http://${bank_url}:3000/api/account/${accountNumber}/pin-code/${pin}/verify`,
       {
         method: "GET",
       },
@@ -49,7 +49,7 @@ const Atm = () => {
   // Process the transaction
   const processTransaction = async (type: TransactionType, amount: number) => {
     // Simulate transaction processing
-    const res = await fetch(`${bank_url}/api/proxy`, {
+    const res = await fetch(`http://${bank_url}:3000/api/proxy`, {
       method: "POST",
       body: JSON.stringify({
         account_number: accountInfo.accountNumber,
