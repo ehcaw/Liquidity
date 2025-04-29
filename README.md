@@ -1,26 +1,32 @@
 ## Getting Started
 
-First, install dependencies:
+First, install dependencies for both applications:
 
 ```bash
+cd bank
+npm install
+
+cd atm
 npm install
 ```
 
-Run the development server:
+Run the bank development server:
 ```bash
-docker compose -f docker-compose.dev.yml up --build
-```
-If you already have the nextjs app image, then use:
-```bash
-docker compose -f docker-compose.dev.yml up
-```
-
-To kill containers and remove all volumes use:
-```bash
-docker compose -f docker-compose.dev.yml down -v
+cd bank
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+Run the atm development server:
+```bash
+cd atm
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
+
+
 
 ## Install Supabase
 You will need Docker installed to run Supabase locally. Checkout the [MacOS](https://docs.docker.com/desktop/setup/install/mac-install/) or [Windows](https://docs.docker.com/desktop/setup/install/windows-install/) to install on either OS.
