@@ -171,7 +171,7 @@ export const AccountComboBox = ({
                 className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                 onClick={() => handleSelect(account.account_number)}
               >
-                {account.name} - {formatAccountNumber(account.account_number)}
+                {account.name} {formatAccountNumber(account.account_number)}
               </div>
             ))}
           </div>
