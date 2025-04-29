@@ -66,10 +66,17 @@ export const AccountComboBox = ({
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    // Only update the actual value when a full account number is entered (12 digits)
-    if (e.target.value.length === 12 && /^\d+$/.test(e.target.value)) {
-      onChange(e.target.value);
+    // Only allow digits in the input
+    const newValue = e.target.value.replace(/[^\d]/g, '');
+    
+    // Update input only if it's empty or contains only digits
+    if (newValue === '' || /^\d+$/.test(newValue)) {
+      setInputValue(newValue);
+      
+      // Only update the form value when a full account number is entered (12 digits)
+      if (newValue.length === 12) {
+        onChange(newValue);
+      }
     }
   };
 
