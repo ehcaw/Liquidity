@@ -89,56 +89,41 @@ export const AccountComboBox = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Get the current cursor position
     const cursorPosition = e.target.selectionStart || 0;
-    
-    // Filter out non-digit characters from the input
     const rawInput = e.target.value.replace(/[^\d-]/g, '');
     const digits = parseAccountNumber(rawInput);
-    
-    // Enforce maximum 12 digits
-    // If trying to add more than 12 digits, prevent the change
+  
+    // Enforce max 12 digits
     if (digits.length > 12) {
-      // Keep existing value instead of accepting the new input
       return;
     }
-    
-    // Format the value with dashes
+  
     const formattedValue = formatAccountNumber(digits);
-    
-    // Update input with formatted value
     setInputValue(formattedValue);
-    
-    // Only update the form value when EXACTLY 12 digits are entered
-    if (digits.length === 12) {
-      onChange(digits); // Store the raw digits in the form state
-    } else {
-      // If not 12 digits, set empty string so validation will fail
-      onChange("");
-    }
-    
-    // Calculate new cursor position after formatting
+  
+    onChange(digits);
+  
     setTimeout(() => {
-      // Adjust cursor position based on how many dashes were added
       let newPosition = cursorPosition;
-      
-      // If we just typed the 4th or 8th digit, move cursor past the dash
+  
       if (digits.length === 4 && cursorPosition === 4) {
         newPosition = 5;
       } else if (digits.length === 8 && cursorPosition === 9) {
         newPosition = 10;
       }
-      
-      // If we deleted a character and the cursor is at a dash, move cursor back
-      if (e.target.value.length < inputValue.length && 
-          (cursorPosition === 5 || cursorPosition === 10)) {
+  
+      if (
+        e.target.value.length < inputValue.length &&
+        (cursorPosition === 5 || cursorPosition === 10)
+      ) {
         newPosition = cursorPosition - 1;
       }
-      
-      // Set the new cursor position
+  
+      newPosition = Math.min(newPosition, formattedValue.length);
       e.target.setSelectionRange(newPosition, newPosition);
     }, 0);
   };
+  
 
   const handleSelect = (accountNumber: string) => {
     onChange(accountNumber);
