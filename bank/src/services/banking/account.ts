@@ -326,8 +326,6 @@ export async function withdraw(
   );
 }
 
-// In your services/banking/account.ts file, modify the transfer function:
-
 export async function transfer(
   src_account_number: string,
   dest_account_number: string,
