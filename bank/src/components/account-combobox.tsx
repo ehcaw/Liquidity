@@ -39,7 +39,8 @@ export const AccountComboBox = ({
     if (value) {
       const selectedAccount = accounts.find(acc => acc.account_number === value);
       if (selectedAccount) {
-        setInputValue(value);
+        // Format the account number when it's set from outside
+        setInputValue(formatAccountNumber(value));
       }
     } else {
       setInputValue("");
@@ -65,19 +66,69 @@ export const AccountComboBox = ({
     };
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow digits in the input
-    const newValue = e.target.value.replace(/[^\d]/g, '');
+  // Add this formatting function
+  const formatAccountNumber = (value: string): string => {
+    // Remove any non-digit characters
+    const digits = value.replace(/\D/g, '');
     
-    // Update input only if it's empty or contains only digits
-    if (newValue === '' || /^\d+$/.test(newValue)) {
-      setInputValue(newValue);
-      
-      // Only update the form value when a full account number is entered (12 digits)
-      if (newValue.length === 12) {
-        onChange(newValue);
-      }
+    // Apply formatting pattern (1111-1111-1111)
+    if (digits.length <= 4) {
+      return digits;
+    } else if (digits.length <= 8) {
+      return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+    } else {
+      return `${digits.slice(0, 4)}-${digits.slice(4, 8)}-${digits.slice(8, 12)}`;
     }
+  };
+
+  // Add this parsing function to strip formatting for validation
+  const parseAccountNumber = (formattedValue: string): string => {
+    return formattedValue.replace(/\D/g, '');
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Get the current cursor position
+    const cursorPosition = e.target.selectionStart || 0;
+    
+    // Only allow digits in the input
+    const rawValue = e.target.value.replace(/[^\d-]/g, '');
+    const digits = parseAccountNumber(rawValue);
+    
+    // Limit to 12 digits maximum
+    const limitedDigits = digits.slice(0, 12);
+    
+    // Format the value
+    const formattedValue = formatAccountNumber(limitedDigits);
+    
+    // Update input with formatted value
+    setInputValue(formattedValue);
+    
+    // Only update the form value when a full account number is entered (12 digits)
+    if (digits.length === 12) {
+      onChange(digits); // Store the raw digits in the form state
+    }
+    
+    // Calculate new cursor position after formatting
+    setTimeout(() => {
+      // Adjust cursor position based on how many dashes were added
+      let newPosition = cursorPosition;
+      
+      // If we just typed the 4th or 8th digit, move cursor past the dash
+      if (digits.length === 4 && cursorPosition === 4) {
+        newPosition = 5;
+      } else if (digits.length === 8 && cursorPosition === 9) {
+        newPosition = 10;
+      }
+      
+      // If we deleted a character and the cursor is at a dash, move cursor back
+      if (e.target.value.length < inputValue.length && 
+          (cursorPosition === 5 || cursorPosition === 10)) {
+        newPosition = cursorPosition - 1;
+      }
+      
+      // Set the new cursor position
+      e.target.setSelectionRange(newPosition, newPosition);
+    }, 0);
   };
 
   const handleSelect = (accountNumber: string) => {
@@ -120,7 +171,7 @@ export const AccountComboBox = ({
                 className="relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                 onClick={() => handleSelect(account.account_number)}
               >
-                {account.name} - {account.account_number}
+                {account.name} - {formatAccountNumber(account.account_number)}
               </div>
             ))}
           </div>
