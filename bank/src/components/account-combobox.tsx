@@ -66,19 +66,22 @@ export const AccountComboBox = ({
     };
   }, []);
 
-  // Add this formatting function
   const formatAccountNumber = (value: string): string => {
     // Remove any non-digit characters
     const digits = value.replace(/\D/g, '');
     
-    // Apply formatting pattern (1111-1111-1111)
-    if (digits.length <= 4) {
-      return digits;
-    } else if (digits.length <= 8) {
-      return `${digits.slice(0, 4)}-${digits.slice(4)}`;
-    } else {
-      return `${digits.slice(0, 4)}-${digits.slice(4, 8)}-${digits.slice(8, 12)}`;
+    // Start building the formatted result
+    let formatted = '';
+    
+    // Apply formatting pattern, with dashes after every 4 digits
+    for (let i = 0; i < digits.length; i++) {
+      if (i > 0 && i % 4 === 0) {
+        formatted += '-';
+      }
+      formatted += digits[i];
     }
+    
+    return formatted;
   };
 
   const parseAccountNumber = (formattedValue: string): string => {
@@ -89,15 +92,19 @@ export const AccountComboBox = ({
     // Get the current cursor position
     const cursorPosition = e.target.selectionStart || 0;
     
-    // Only allow digits in the input
-    const rawValue = e.target.value.replace(/[^\d-]/g, '');
-    const digits = parseAccountNumber(rawValue);
+    // Filter out non-digit characters from the input
+    const rawInput = e.target.value.replace(/[^\d-]/g, '');
+    const digits = parseAccountNumber(rawInput);
     
-    // Limit to 12 digits maximum
-    const limitedDigits = digits.slice(0, 12);
+    // Enforce maximum 12 digits
+    // If trying to add more than 12 digits, prevent the change
+    if (digits.length > 12) {
+      // Keep existing value instead of accepting the new input
+      return;
+    }
     
-    // Format the value
-    const formattedValue = formatAccountNumber(limitedDigits);
+    // Format the value with dashes
+    const formattedValue = formatAccountNumber(digits);
     
     // Update input with formatted value
     setInputValue(formattedValue);
@@ -106,7 +113,7 @@ export const AccountComboBox = ({
     if (digits.length === 12) {
       onChange(digits); // Store the raw digits in the form state
     } else {
-      // If it's not 12 digits, set an empty value so the form validation fails
+      // If not 12 digits, set empty string so validation will fail
       onChange("");
     }
     

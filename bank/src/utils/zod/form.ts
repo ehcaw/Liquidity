@@ -50,9 +50,13 @@ export const CreateAccountFormSchema = z.object({
 export const TransferFormSchema = z.object({
   fromAccount: z.string({
     required_error: "Please select an account to transfer from",
+  }).refine(value => value.length === 12, {
+    message: "Account number must be exactly 12 digits",
   }),
   toAccount: z.string({
     required_error: "Please select an account to transfer to",
+  }).refine(value => value.length === 12, {
+    message: "Account number must be exactly 12 digits",
   }),
   amount: z.number().refine(
     (val) => {

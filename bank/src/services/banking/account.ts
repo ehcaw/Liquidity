@@ -334,6 +334,11 @@ export async function transfer(
   amount: number,
   create_transaction: boolean = true,
 ) {
+  // Validate account numbers are exactly 12 digits
+  if (!/^\d{12}$/.test(src_account_number) || !/^\d{12}$/.test(dest_account_number)) {
+    throw new ClientError("Account numbers must be exactly 12 digits", 400);
+  }
+
   await getAuthUser();
   const src_account = await getUserAccount(src_account_number);
   
@@ -342,8 +347,7 @@ export async function transfer(
   try {
     dest_account = await getUserAccount(dest_account_number);
   } catch (error) {
-    // If destination account doesn't exist, just deduct the money
-    // without depositing to any account (simulate external transfer)
+    // If destination account doesn't exist, just proceed with withdrawal
     console.log(`Destination account ${dest_account_number} not found. Processing as external transfer.`);
   }
 
