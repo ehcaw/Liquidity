@@ -326,6 +326,8 @@ export async function withdraw(
   );
 }
 
+// In your services/banking/account.ts file, modify the transfer function:
+
 export async function transfer(
   src_account_number: string,
   dest_account_number: string,
@@ -334,21 +336,38 @@ export async function transfer(
 ) {
   await getAuthUser();
   const src_account = await getUserAccount(src_account_number);
-  const dest_account = await getUserAccount(dest_account_number);
+  
+  // Check if destination account exists
+  let dest_account;
+  try {
+    dest_account = await getUserAccount(dest_account_number);
+  } catch (error) {
+    // If destination account doesn't exist, just deduct the money
+    // without depositing to any account (simulate external transfer)
+    console.log(`Destination account ${dest_account_number} not found. Processing as external transfer.`);
+  }
 
+  // Withdraw from source account
   await withdraw(src_account_number, amount, false);
-  await deposit(dest_account_number, amount);
+  
+  // Deposit to destination account only if it exists
+  if (dest_account) {
+    await deposit(dest_account_number, amount, false);
+  }
 
   if (!create_transaction) {
     return null;
   }
-  console.log(src_account.balance, amount * -1);
+  
+  // Create a transaction record for the source account
   return await createTransaction(
     src_account.id,
     src_account.balance - amount,
     amount * -1,
     "Transfer",
-    `Transferred $${amount} from ${src_account.name} to ${dest_account.name}`,
+    dest_account 
+      ? `Transferred $${amount} from ${src_account.name} to ${dest_account.name}`
+      : `Transferred $${amount} from ${src_account.name} to external account ${dest_account_number}`,
   );
 }
 

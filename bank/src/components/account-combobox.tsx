@@ -81,7 +81,6 @@ export const AccountComboBox = ({
     }
   };
 
-  // Add this parsing function to strip formatting for validation
   const parseAccountNumber = (formattedValue: string): string => {
     return formattedValue.replace(/\D/g, '');
   };
@@ -103,9 +102,12 @@ export const AccountComboBox = ({
     // Update input with formatted value
     setInputValue(formattedValue);
     
-    // Only update the form value when a full account number is entered (12 digits)
+    // Only update the form value when EXACTLY 12 digits are entered
     if (digits.length === 12) {
       onChange(digits); // Store the raw digits in the form state
+    } else {
+      // If it's not 12 digits, set an empty value so the form validation fails
+      onChange("");
     }
     
     // Calculate new cursor position after formatting
