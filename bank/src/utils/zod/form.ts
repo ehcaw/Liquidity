@@ -47,32 +47,31 @@ export const CreateAccountFormSchema = z.object({
   account_type: z.enum(["Checking", "Savings"]),
 });
 
-export const TransferFormSchema = z
-  .object({
-    fromAccount: z.string({
-      required_error: "Please select an account to transfer from",
+export const TransferFormSchema = z.object({
+  fromAccount: z.string({
+    required_error: "Please select an account to transfer from",
+  }).refine(value => value.length === 12, {
+    message: "Account number must be exactly 12 digits",
+  }),
+  toAccount: z.string({
+    required_error: "Please select an account to transfer to",
+  }).refine(value => value.length === 12, {
+    message: "Account number must be exactly 12 digits",
+  }),
+  amount: z.number().refine(
+    (val) => {
+      return !isNaN(val) && val > 0;
+    },
+    {
+      message: "Amount must be greater than 0",
+    },
+  ),
+  confirmTransfer: z.literal(true, {
+    errorMap: () => ({
+      message: "You must confirm the transfer details",
     }),
-    toAccount: z.string({
-      required_error: "Please select an account to transfer to",
-    }),
-    amount: z.number().refine(
-      (val) => {
-        return !isNaN(val) && val > 0;
-      },
-      {
-        message: "Amount must be greater than 0",
-      },
-    ),
-    confirmTransfer: z.literal(true, {
-      errorMap: () => ({
-        message: "You must confirm the transfer details",
-      }),
-    }),
-  })
-  .refine((data) => data.fromAccount !== data.toAccount, {
-    message: "From and To accounts must be different",
-    path: ["toAccount"],
-  });
+  }),
+});
 
 export const DepositFormSchema = z.object({
   toAccount: z.string({

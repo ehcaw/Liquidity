@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ArrowRightLeft } from "lucide-react";
+import { AccountComboBox } from "@/components/account-combobox";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -142,34 +143,22 @@ export default function TransferForm({ accounts }: ITransferFormProps) {
                 />
 
                 <FormField
-                  control={form.control}
-                  name="toAccount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>To Account</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select account" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {accounts.map((account) => (
-                            <SelectItem
-                              key={account.id}
-                              value={account.account_number}
-                            >
-                              {account.name} - ${account.balance}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                control={form.control}
+                name="toAccount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>To Account</FormLabel>
+                    <FormControl>
+                      <AccountComboBox
+                        accounts={accounts}
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Enter Account"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
                 />
               </div>
 
