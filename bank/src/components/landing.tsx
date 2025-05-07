@@ -103,12 +103,11 @@ export default function LandingPage() {
                 anywhere, on any device.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
-                <Button size="lg" className="gap-2">
-                  Open an Account <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button size="lg" variant="outline">
-                  Learn More
-                </Button>
+                <Link href="/account/create">
+                  <Button size="lg" className="gap-2">
+                    Open an Account <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
@@ -166,9 +165,6 @@ export default function LandingPage() {
                   </div>
                   <h3 className="mb-2 text-xl font-bold">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                  <div className="mt-4 flex items-center text-sm font-medium text-primary">
-                    Learn more <ChevronRight className="ml-1 h-4 w-4" />
-                  </div>
                 </div>
               ))}
             </div>
@@ -205,7 +201,6 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button className="mt-8">Learn About Our Security</Button>
               </div>
               <div className="relative mx-auto w-full max-w-md">
                 <div className="relative z-10 overflow-hidden rounded-2xl border bg-background p-6 shadow-xl">
@@ -238,7 +233,6 @@ export default function LandingPage() {
                         </div>
                       </div>
                     </div>
-                    <Button className="w-full">Enable 2FA</Button>
                   </div>
                 </div>
                 <div className="absolute -bottom-6 -left-6 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl"></div>
@@ -360,7 +354,6 @@ export default function LandingPage() {
               <p className="mb-4 text-muted-foreground">
                 Empower your team with real-time data and customer insights
               </p>
-              <Button size="lg">Request Employee Access</Button>
             </div>
           </div>
         </section>
