@@ -103,12 +103,11 @@ export default function LandingPage() {
                 anywhere, on any device.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row">
-                <Button size="lg" className="gap-2">
-                  Open an Account <ArrowRight className="h-4 w-4" />
-                </Button>
-                <Button size="lg" variant="outline">
-                  Learn More
-                </Button>
+                <Link href="/account/create">
+                  <Button size="lg" className="gap-2">
+                    Open an Account <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
@@ -128,7 +127,7 @@ export default function LandingPage() {
             <div className="relative mx-auto w-full max-w-md">
               <div className="relative z-10 overflow-hidden rounded-2xl border bg-background shadow-xl">
                 <Image
-                  src="/placeholder.svg?height=600&width=400"
+                  src="/user_dashboard.png"
                   width={400}
                   height={600}
                   alt="Banking app dashboard"
@@ -166,9 +165,6 @@ export default function LandingPage() {
                   </div>
                   <h3 className="mb-2 text-xl font-bold">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                  <div className="mt-4 flex items-center text-sm font-medium text-primary">
-                    Learn more <ChevronRight className="ml-1 h-4 w-4" />
-                  </div>
                 </div>
               ))}
             </div>
@@ -205,7 +201,6 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button className="mt-8">Learn About Our Security</Button>
               </div>
               <div className="relative mx-auto w-full max-w-md">
                 <div className="relative z-10 overflow-hidden rounded-2xl border bg-background p-6 shadow-xl">
@@ -238,7 +233,6 @@ export default function LandingPage() {
                         </div>
                       </div>
                     </div>
-                    <Button className="w-full">Enable 2FA</Button>
                   </div>
                 </div>
                 <div className="absolute -bottom-6 -left-6 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl"></div>
@@ -255,7 +249,7 @@ export default function LandingPage() {
                 <div className="relative mx-auto flex max-w-xs justify-center">
                   <div className="relative z-10 overflow-hidden rounded-3xl border bg-background shadow-xl">
                     <Image
-                      src="/placeholder.svg?height=600&width=300"
+                      src="/user_mobile_dashboard.png"
                       width={300}
                       height={600}
                       alt="Banking mobile app"
@@ -305,62 +299,18 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="relative mx-auto max-w-4xl overflow-hidden rounded-xl border bg-background shadow-xl">
-              <div className="border-b bg-slate-50 p-4">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-red-500"></div>
-                  <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-                  <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                  <div className="ml-4 h-6 w-64 rounded bg-slate-200"></div>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="grid gap-6 md:grid-cols-3">
-                  <div className="col-span-2 space-y-6">
-                    <div className="h-8 w-48 rounded bg-slate-200"></div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="rounded-lg border bg-slate-50 p-4">
-                        <div className="mb-2 h-4 w-24 rounded bg-slate-200"></div>
-                        <div className="h-8 w-32 rounded bg-slate-200"></div>
-                        <div className="mt-4 h-24 w-full rounded bg-slate-200"></div>
-                      </div>
-                      <div className="rounded-lg border bg-slate-50 p-4">
-                        <div className="mb-2 h-4 w-24 rounded bg-slate-200"></div>
-                        <div className="h-8 w-32 rounded bg-slate-200"></div>
-                        <div className="mt-4 h-24 w-full rounded bg-slate-200"></div>
-                      </div>
-                    </div>
-                    <div className="rounded-lg border bg-slate-50 p-4">
-                      <div className="mb-4 h-4 w-32 rounded bg-slate-200"></div>
-                      <div className="h-32 w-full rounded bg-slate-200"></div>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="h-8 w-32 rounded bg-slate-200"></div>
-                    <div className="rounded-lg border bg-slate-50 p-4">
-                      <div className="mb-2 h-4 w-24 rounded bg-slate-200"></div>
-                      <div className="space-y-2">
-                        <div className="h-4 w-full rounded bg-slate-200"></div>
-                        <div className="h-4 w-full rounded bg-slate-200"></div>
-                        <div className="h-4 w-3/4 rounded bg-slate-200"></div>
-                      </div>
-                    </div>
-                    <div className="rounded-lg border bg-slate-50 p-4">
-                      <div className="mb-2 h-4 w-24 rounded bg-slate-200"></div>
-                      <div className="space-y-2">
-                        <div className="h-4 w-full rounded bg-slate-200"></div>
-                        <div className="h-4 w-full rounded bg-slate-200"></div>
-                        <div className="h-4 w-3/4 rounded bg-slate-200"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Image
+                src="/admin_dashboard.png"
+                height={800}
+                width={1200}
+                alt="Admin Dashboard view"
+                className="w-full"
+              />
             </div>
             <div className="mt-12 text-center">
               <p className="mb-4 text-muted-foreground">
                 Empower your team with real-time data and customer insights
               </p>
-              <Button size="lg">Request Employee Access</Button>
             </div>
           </div>
         </section>
