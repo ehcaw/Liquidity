@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { ProfileFormSchema } from "@/utils/zod/form";
 import React, { useState } from "react";
@@ -32,7 +32,7 @@ export type FormValues = z.infer<typeof ProfileFormSchema>;
 
 interface IProfileFormProps {
   user: FormValues;
-  states: State['code'][];
+  states: State["code"][];
 }
 
 const ProfileForm: React.FC<IProfileFormProps> = ({ user, states }) => {
@@ -97,25 +97,6 @@ const ProfileForm: React.FC<IProfileFormProps> = ({ user, states }) => {
               )}
             />
           </div>
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    disabled
-                    placeholder="john.doe@example.com"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <FormField
             control={form.control}
