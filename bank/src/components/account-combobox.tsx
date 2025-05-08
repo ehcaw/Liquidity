@@ -92,40 +92,84 @@ export const AccountComboBox = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cursorPosition = e.target.selectionStart || 0;
-    const rawInput = e.target.value.replace(/[^\d-]/g, '');
+    const rawInput = e.target.value;
+    
+    // Check if we're dealing with an account name + number format already
+    const isDisplayingAccountName = 
+      accounts.some(acc => rawInput.includes(acc.name) && rawInput.includes(formatAccountNumber(acc.account_number)));
+    
+    // If we're in account name display mode and user is trying to delete
+    if (isDisplayingAccountName) {
+      // Reset to just the formatted account number to allow editing
+      const accountNumber = parseAccountNumber(rawInput);
+      const formattedNumber = formatAccountNumber(accountNumber);
+      setInputValue(formattedNumber);
+      onChange(accountNumber);
+      return;
+    }
+    
     const digits = parseAccountNumber(rawInput);
-  
+    
     // Enforce max 12 digits
     if (digits.length > 12) {
       return;
     }
-  
+    
+    // Format the value with dashes
     const formattedValue = formatAccountNumber(digits);
     setInputValue(formattedValue);
-  
     onChange(digits);
-  
+    
+    // Only convert to account name format when:
+    // 1. The account number is EXACTLY 12 digits AND
+    // 2. It EXACTLY matches one of our accounts
+    if (digits.length === 12) {
+      const exactMatch = accounts.find(acc => acc.account_number === digits);
+      if (exactMatch) {
+        // Check if the dropdown is open - only convert when it's closed
+        // This gives user a chance to select from dropdown first
+        if (!isOpen) {
+          setInputValue(`${exactMatch.name} ${formatAccountNumber(exactMatch.account_number)}`);
+        }
+      }
+    }
+    
     setTimeout(() => {
-      let newPosition = cursorPosition;
-  
-      if (digits.length === 4 && cursorPosition === 4) {
-        newPosition = 5;
-      } else if (digits.length === 8 && cursorPosition === 9) {
-        newPosition = 10;
+      // Only adjust cursor if we didn't switch to account name format
+      if (!isDisplayingAccountName) {
+        // Count digits up to cursor position
+        const cursorDigitPosition = parseAccountNumber(rawInput.substring(0, cursorPosition)).length;
+        
+        // Find where to place cursor in formatted string
+        let newPosition = 0;
+        let digitCount = 0;
+        
+        for (let i = 0; i < formattedValue.length; i++) {
+          if (/\d/.test(formattedValue[i])) {
+            digitCount++;
+          }
+          if (digitCount > cursorDigitPosition) {
+            break;
+          }
+          newPosition = i + 1;
+        }
+        
+        newPosition = Math.min(newPosition, formattedValue.length);
+        e.target.setSelectionRange(newPosition, newPosition);
       }
-  
-      if (
-        e.target.value.length < inputValue.length &&
-        (cursorPosition === 5 || cursorPosition === 10)
-      ) {
-        newPosition = cursorPosition - 1;
-      }
-  
-      newPosition = Math.min(newPosition, formattedValue.length);
-      e.target.setSelectionRange(newPosition, newPosition);
     }, 0);
   };
   
+  const findMatchingAccount = (input: string) => {
+    // Remove any non-digit characters to compare just the numbers
+    const cleanInput = input.replace(/\D/g, '');
+    
+    // Only try to find matches if we have a substantial input (e.g., at least 8 digits)
+    if (cleanInput.length >= 8) {
+      return accounts.find(acc => acc.account_number.includes(cleanInput));
+    }
+    return null;
+  };
 
   const handleSelect = (accountNumber: string, accountName?: string) => {
     onChange(accountNumber);
