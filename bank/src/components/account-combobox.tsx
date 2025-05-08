@@ -40,6 +40,8 @@ export const AccountComboBox = ({
       const selectedAccount = accounts.find(acc => acc.account_number === value);
       if (selectedAccount) {
         // Format the account number when it's set from outside
+        setInputValue(`${selectedAccount.name} ${formatAccountNumber(value)}`);
+      } else {
         setInputValue(formatAccountNumber(value));
       }
     } else {
@@ -125,9 +127,21 @@ export const AccountComboBox = ({
   };
   
 
-  const handleSelect = (accountNumber: string) => {
+  const handleSelect = (accountNumber: string, accountName?: string) => {
     onChange(accountNumber);
-    setInputValue(accountNumber);
+    
+    // Instead of setting just the account number:
+    // setInputValue(accountNumber);
+    
+    // Find the selected account to get its name
+    const selectedAccount = accounts.find(acc => acc.account_number === accountNumber);
+    if (selectedAccount) {
+      // Format the display value to include the account name
+      setInputValue(`${selectedAccount.name} ${formatAccountNumber(accountNumber)}`);
+    } else {
+      setInputValue(formatAccountNumber(accountNumber));
+    }
+    
     setIsOpen(false);
   };
 
