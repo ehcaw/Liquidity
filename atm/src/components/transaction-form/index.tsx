@@ -1,13 +1,27 @@
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
 
 export type TransactionType = "Withdraw" | "Deposit";
+
+type Account =  {
+  account_number: string
+  account_type: string
+  balance: number
+  created_at: string
+  id: number
+  name: string
+  pin_code: string | null
+  status: string
+  user_id: number
+}
 
 interface ITransactionFormProps {
   onSubmit: (type: TransactionType, amount: number) => void;
   accountNumber: string;
 }
+
+
 
 const TransactionForm: React.FC<ITransactionFormProps> = ({
   onSubmit,
@@ -18,6 +32,20 @@ const TransactionForm: React.FC<ITransactionFormProps> = ({
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [account, setAccount] = useState<Account | null>(null);
+  const bank_url = import.meta.env.VITE_BANK_DOMAIN;
+
+
+  useEffect(() => {
+    const getData = async () => {
+         const res = await fetch(`http://${bank_url}:3000/api/proxy/account/${accountNumber}`);
+        const data = await res.json();
+        console.log(data);
+        setAccount(data.data);
+   }
+
+  getData();
+}, [])
 
   const validateForm = () => {
     if (!transactionType) {
@@ -53,7 +81,9 @@ const TransactionForm: React.FC<ITransactionFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="transaction-form">
       <div className="header">
-        <p>Account: {accountNumber}</p>
+        <p>Account#: {accountNumber}</p>
+        <p>Account Name: {account?.name}</p>
+        <p>Account Balance: {account?.balance}</p>
       </div>
 
       <div className="form-group radio-group">
