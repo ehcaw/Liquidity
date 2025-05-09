@@ -21,7 +21,7 @@ Init supabase locally:
 ```bash
 npx supabase init
 ```
-This command will create a `supabase/` directory in the root of your project. This is where your local supabase configurations will be stored.
+This command will create a `supabase/` directory. This is where your local supabase configurations will be stored.
 
 Then, run:
 ```bash
@@ -109,7 +109,9 @@ bank/supabase/
 
 # Running the Applications
 
-Before running the applications, ensure that your supabase is running. Install dependencies for both applications:
+Before running the applications, ensure that your supabase is running. We don't use docker containers to run the applications, so ignore the `docker-compose.yml` file.
+
+Install dependencies for both applications:
 
 ```bash
 cd bank
