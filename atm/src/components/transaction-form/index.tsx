@@ -64,6 +64,18 @@ const TransactionForm: React.FC<ITransactionFormProps> = ({
       return false;
     }
 
+    if (transactionType == "Withdraw") {
+      if (!account) {
+        setError("Account information not loaded");
+        return false;
+      }
+      
+      if (numAmount > account.balance) {
+        setError("Insufficient funds");
+        return false;
+      }
+    }
+
     setError("");
     return true;
   };
