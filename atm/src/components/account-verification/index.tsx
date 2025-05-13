@@ -68,8 +68,8 @@ const AccountVerification: React.FC<IAccountVerificationProps> = ({
       <div className="form-group">
         <label htmlFor="pin">PIN</label>
         <input
-          id="pin"
-          type="text"
+          id="password"
+          type="password"
           placeholder="Enter your 4-digit PIN"
           value={pin}
           onChange={(e) => setPin(e.target.value)}
@@ -88,4 +88,3 @@ const AccountVerification: React.FC<IAccountVerificationProps> = ({
 };
 
 export default AccountVerification;
-
